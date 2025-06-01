@@ -68,3 +68,5 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) 
     </div>
   );
 };
+
+export default ProductCard

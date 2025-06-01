@@ -1,112 +1,101 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2.38.4";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
-const CONSUMER_KEY = Deno.env.get("MPESA_CONSUMER_KEY");
-const CONSUMER_SECRET = Deno.env.get("MPESA_CONSUMER_SECRET");
-const BUSINESS_NUMBER = Deno.env.get("MPESA_BUSINESS_NUMBER");
+const MPESA_API_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+const CONSUMER_KEY = Deno.env.get('MPESA_CONSUMER_KEY');
+const CONSUMER_SECRET = Deno.env.get('MPESA_CONSUMER_SECRET');
+const BUSINESS_NUMBER = Deno.env.get('MPESA_BUSINESS_NUMBER');
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
-const getAccessToken = async () => {
+async function getAccessToken() {
   const auth = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
   
-  const response = await fetch(
-    'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
-    {
-      headers: {
-        Authorization: `Basic ${auth}`,
-      },
+  try {
+    const response = await fetch(
+      'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    const data = await response.json();
+    
+    if (!data.access_token) {
+      throw new Error('Invalid access token response');
     }
-  );
-  
-  if (!response.ok) {
-    throw new Error('Failed to get access token');
+    
+    return data.access_token;
+  } catch (error) {
+    console.error('Error getting access token:', error);
+    throw new Error('Failed to authenticate with M-Pesa');
   }
-  
-  const data = await response.json();
-  if (!data.access_token) {
-    throw new Error('Invalid access token response');
-  }
-  
-  return data.access_token;
-};
+}
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    if (req.method !== "POST") {
-      throw new Error("Method not allowed");
-    }
-
     const { phoneNumber, amount } = await req.json();
 
     if (!phoneNumber || !amount) {
-      throw new Error("Phone number and amount are required");
+      return new Response(
+        JSON.stringify({ error: 'Phone number and amount are required' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     const accessToken = await getAccessToken();
     const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
-    const shortcode = BUSINESS_NUMBER;
-    const password = btoa(`${shortcode}${CONSUMER_SECRET}${timestamp}`);
-    
-    const response = await fetch(
-      'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          BusinessShortCode: shortcode,
-          Password: password,
-          Timestamp: timestamp,
-          TransactionType: 'CustomerPayBillOnline',
-          Amount: Math.round(amount),
-          PartyA: phoneNumber,
-          PartyB: shortcode,
-          PhoneNumber: phoneNumber,
-          CallBackURL: `${Deno.env.get("SUPABASE_URL")}/functions/v1/mpesa-callback`,
-          AccountReference: 'QWETUHub',
-          TransactionDesc: 'Payment for supplies'
-        })
-      }
-    );
+    const password = btoa(`${BUSINESS_NUMBER}${CONSUMER_SECRET}${timestamp}`);
+
+    const response = await fetch(MPESA_API_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        BusinessShortCode: BUSINESS_NUMBER,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: 'CustomerPayBillOnline',
+        Amount: Math.round(amount),
+        PartyA: phoneNumber,
+        PartyB: BUSINESS_NUMBER,
+        PhoneNumber: phoneNumber,
+        CallBackURL: `${Deno.env.get('SUPABASE_URL')}/functions/v1/mpesa-callback`,
+        AccountReference: 'QWETUHub',
+        TransactionDesc: 'Payment for supplies'
+      })
+    });
 
     const data = await response.json();
-
-    if (!response.ok || !data.CheckoutRequestID) {
-      throw new Error(data.errorMessage || 'Failed to initiate payment');
-    }
 
     return new Response(
       JSON.stringify(data),
       { 
-        headers: { 
-          ...corsHeaders,
-          "Content-Type": "application/json" 
-        } 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
-
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+    console.error('Error processing M-Pesa request:', error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: 'Failed to process payment request' }),
       { 
-        status: 400,
-        headers: { 
-          ...corsHeaders,
-          "Content-Type": "application/json" 
-        } 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   }

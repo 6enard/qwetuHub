@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
+import emailjs from '@emailjs/browser';
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -29,6 +30,37 @@ const Checkout: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError(null);
+  };
+
+  const sendOrderNotification = async (orderDetails: any) => {
+    try {
+      const itemsList = items.map(item => 
+        `${item.product.name} x${item.quantity} - KES ${item.product.price * item.quantity}`
+      ).join('\\n');
+
+      const templateParams = {
+        customer_name: formData.name,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        room_number: formData.roomNumber,
+        hostel: formData.hostel,
+        order_id: orderDetails.id,
+        items: itemsList,
+        subtotal: totalPrice,
+        delivery_fee: 50,
+        total_amount: totalPrice + 50,
+        order_date: new Date().toLocaleString()
+      };
+
+      await emailjs.send(
+        'service_8h3ixun',
+        'template_5wm5fq7',
+        templateParams,
+        'YOUR_PUBLIC_KEY' // Replace with your actual public key
+      );
+    } catch (error) {
+      console.error('Error sending email notification:', error);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,6 +102,9 @@ const Checkout: React.FC = () => {
         totalAmount,
         createdAt: new Date().toISOString()
       });
+
+      // Send email notification
+      await sendOrderNotification({ id: orderRef.id });
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);

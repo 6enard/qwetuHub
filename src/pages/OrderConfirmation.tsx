@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Package, Clock, Home, Download, AlertCircle, MessageCircle } from 'lucide-react';
+import { CheckCircle, Package, Clock, Home, Download, AlertCircle, MessageCircle, Share2 } from 'lucide-react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
@@ -36,9 +36,62 @@ const OrderConfirmation: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
-  const openWhatsApp = () => {
-    const message = encodeURIComponent(`Hi, I've placed order #${orderId} and made the payment. Here's my payment screenshot.`);
-    window.open(`https://wa.me/254740087715?text=${message}`, '_blank');
+  const openWhatsApp = (withReceipt: boolean = false) => {
+    let message = `Hi, I've placed order #${orderId} and made the payment.`;
+    if (withReceipt) {
+      message += ' Here is my order receipt for confirmation:';
+    } else {
+      message += ' I will send the payment screenshot shortly.';
+    }
+    window.open(`https://wa.me/254740087715?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
+  const generateReceipt = () => {
+    if (!orderData) return;
+
+    const receipt = `
+QWETUHub Receipt
+-----------------
+Order #${orderId}
+Date: ${new Date(orderData.createdAt).toLocaleDateString()}
+Time: ${new Date(orderData.createdAt).toLocaleTimeString()}
+
+Customer Information:
+Name: ${orderData.customerInfo.name}
+Phone: ${orderData.customerInfo.phone}
+Hostel: ${orderData.customerInfo.hostel}
+Room: ${orderData.customerInfo.roomNumber}
+
+Items:
+${orderData.items.map(item => 
+  `${item.name} x${item.quantity} @ KES ${item.price} = KES ${item.subtotal}`
+).join('\n')}
+
+Subtotal: KES ${orderData.totalAmount - 50}
+Delivery Fee: KES 50
+Total Amount: KES ${orderData.totalAmount}
+
+Payment Instructions:
+-------------------
+1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
+2. Take a screenshot of the M-Pesa confirmation message
+3. Send the screenshot via WhatsApp to 0740087715
+4. Your order will be processed once payment is confirmed
+
+Order Status: ${orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}
+
+Thank you for shopping with QWETUHub!
+    `;
+
+    const blob = new Blob([receipt], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `QWETUHub-Receipt-${orderId}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   useEffect(() => {
@@ -113,46 +166,6 @@ const OrderConfirmation: React.FC = () => {
 
   const currentStep = getStepNumber(orderData.trackingStatus);
 
-  const generateReceipt = () => {
-    const receipt = `
-QWETUHub Receipt
------------------
-Order #${orderId}
-Date: ${new Date(orderData.createdAt).toLocaleDateString()}
-Time: ${new Date(orderData.createdAt).toLocaleTimeString()}
-
-Customer Information:
-Name: ${orderData.customerInfo.name}
-Phone: ${orderData.customerInfo.phone}
-Hostel: ${orderData.customerInfo.hostel}
-Room: ${orderData.customerInfo.roomNumber}
-
-Items:
-${orderData.items.map(item => 
-  `${item.name} x${item.quantity} @ KES ${item.price} = KES ${item.subtotal}`
-).join('\n')}
-
-Payment Instructions:
--------------------
-1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
-2. Take a screenshot of the M-Pesa confirmation message
-3. Send the screenshot via WhatsApp to 0740087715
-4. Your order will be processed once payment is confirmed
-
-Thank you for shopping with QWETUHub!
-    `;
-
-    const blob = new Blob([receipt], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `QWETUHub-Receipt-${orderId}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-10">
       <div className="max-w-3xl mx-auto">
@@ -177,7 +190,7 @@ Thank you for shopping with QWETUHub!
               <li>
                 Send the screenshot via WhatsApp{' '}
                 <button 
-                  onClick={openWhatsApp}
+                  onClick={() => openWhatsApp(false)}
                   className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium"
                 >
                   <MessageCircle size={16} />
@@ -248,6 +261,13 @@ Thank you for shopping with QWETUHub!
             >
               <Download size={18} />
               Download Receipt
+            </button>
+            <button
+              onClick={() => openWhatsApp(true)}
+              className="btn bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+            >
+              <Share2 size={18} />
+              Share Receipt on WhatsApp
             </button>
             <Link to="/" className="btn btn-primary text-center">
               Return to Home

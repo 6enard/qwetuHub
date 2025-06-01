@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Phone, User, Home } from 'lucide-react';
+import { CreditCard, Phone, User, Home, AlertCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -18,7 +18,7 @@ const Checkout: React.FC = () => {
     hostel: 'Qwetu Ruaraka',
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   if (items.length === 0) {
     navigate('/cart');
@@ -28,21 +28,46 @@ const Checkout: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setError(null); // Clear error when user makes changes
+  };
+
+  const validatePhone = (phone: string): string => {
+    // Remove any non-digit characters
+    let cleaned = phone.replace(/\D/g, '');
+    
+    // If it starts with 0, replace with 254
+    if (cleaned.startsWith('0')) {
+      cleaned = '254' + cleaned.slice(1);
+    }
+    
+    // If it doesn't start with 254, add it
+    if (!cleaned.startsWith('254')) {
+      cleaned = '254' + cleaned;
+    }
+    
+    return cleaned;
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
-    setPaymentError(null);
-    
+    setError(null);
+
     try {
-      // Format phone number to include country code if needed
-      const formattedPhone = formData.phone.startsWith('254') 
-        ? formData.phone 
-        : `254${formData.phone.replace(/^0/, '')}`;
+      // Validate phone number
+      if (formData.phone.length < 10) {
+        throw new Error('Please enter a valid phone number');
+      }
+
+      const formattedPhone = validatePhone(formData.phone);
+      const totalAmount = totalPrice + 50; // Add delivery fee
 
       // Initiate STK Push
-      await initiateSTKPush(formattedPhone, totalPrice + 50);
+      const stkResponse = await initiateSTKPush(formattedPhone, totalAmount);
+      
+      if (!stkResponse || !stkResponse.CheckoutRequestID) {
+        throw new Error('Failed to initiate payment. Please try again.');
+      }
 
       // Create order in Firestore
       const orderRef = await addDoc(collection(db, 'orders'), {
@@ -56,7 +81,7 @@ const Checkout: React.FC = () => {
         })),
         customerInfo: {
           name: formData.name,
-          phone: formData.phone,
+          phone: formattedPhone,
           roomNumber: formData.roomNumber,
           hostel: formData.hostel
         },
@@ -67,7 +92,8 @@ const Checkout: React.FC = () => {
           timestamp: new Date().toISOString(),
           message: 'Order has been placed successfully'
         }],
-        totalAmount: totalPrice + 50,
+        totalAmount,
+        checkoutRequestId: stkResponse.CheckoutRequestID,
         createdAt: new Date().toISOString()
       });
 
@@ -75,7 +101,7 @@ const Checkout: React.FC = () => {
       navigate(`/confirmation/${orderRef.id}`);
     } catch (error) {
       console.error('Error processing payment:', error);
-      setPaymentError('Failed to process payment. Please try again.');
+      setError(error instanceof Error ? error.message : 'Failed to process payment. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -90,9 +116,10 @@ const Checkout: React.FC = () => {
           <form onSubmit={handleSubmit}>
             <h2 className="text-xl font-bold mb-6">Delivery Information</h2>
             
-            {paymentError && (
-              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
-                {paymentError}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
+                <AlertCircle size={20} />
+                <span>{error}</span>
               </div>
             )}
             
@@ -114,6 +141,7 @@ const Checkout: React.FC = () => {
                     placeholder="Your full name"
                     className="input pl-10"
                     required
+                    disabled={isProcessing}
                   />
                 </div>
               </div>
@@ -135,10 +163,14 @@ const Checkout: React.FC = () => {
                     placeholder="07XX XXX XXX"
                     className="input pl-10"
                     required
+                    disabled={isProcessing}
+                    pattern="[0-9]*"
+                    minLength={10}
+                    maxLength={12}
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  This number will receive the M-Pesa payment request
+                  Enter your M-Pesa number starting with 07XX or 01XX
                 </p>
               </div>
               
@@ -158,6 +190,7 @@ const Checkout: React.FC = () => {
                       value={formData.hostel}
                       readOnly
                       className="input pl-10 bg-gray-50"
+                      disabled={true}
                     />
                   </div>
                 </div>
@@ -175,6 +208,7 @@ const Checkout: React.FC = () => {
                     placeholder="e.g. A123"
                     className="input"
                     required
+                    disabled={isProcessing}
                   />
                 </div>
               </div>
@@ -222,7 +256,14 @@ const Checkout: React.FC = () => {
                     : 'bg-gray-300 cursor-not-allowed text-gray-700'
                 }`}
               >
-                {isProcessing ? 'Processing Payment...' : 'Pay Now'}
+                {isProcessing ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Processing Payment...
+                  </div>
+                ) : (
+                  'Pay Now'
+                )}
               </button>
             </div>
           </form>

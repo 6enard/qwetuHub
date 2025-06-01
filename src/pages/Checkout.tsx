@@ -32,24 +32,28 @@ const Checkout: React.FC = () => {
     setError(null);
   };
 
-  const sendOrderNotification = async (orderDetails: any) => {
+  const sendOrderNotification = async (orderId: string) => {
     try {
-      const itemsList = items.map(item => 
-        `${item.product.name} x${item.quantity} - KES ${item.product.price * item.quantity}`
-      ).join('\n');
+      const now = new Date();
+      const formattedItems = items.map(item => ({
+        item_name: item.product.name,
+        quantity: item.quantity,
+        unit_price: item.product.price,
+        total_price: item.product.price * item.quantity
+      }));
 
       const templateParams = {
+        order_id: orderId,
+        order_date: now.toLocaleDateString(),
+        order_time: now.toLocaleTimeString(),
         customer_name: formData.name,
-        customer_email: formData.email,
         customer_phone: formData.phone,
-        room_number: formData.roomNumber,
-        hostel: formData.hostel,
-        order_id: orderDetails.id,
-        items: itemsList,
+        customer_hostel: formData.hostel,
+        customer_room: formData.roomNumber,
+        items: formattedItems,
         subtotal: totalPrice,
         delivery_fee: 50,
-        total_amount: totalPrice + 50,
-        order_date: new Date().toLocaleString()
+        total_amount: totalPrice + 50
       };
 
       await emailjs.send(
@@ -104,7 +108,7 @@ const Checkout: React.FC = () => {
       });
 
       // Send email notification
-      await sendOrderNotification({ id: orderRef.id });
+      await sendOrderNotification(orderRef.id);
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);

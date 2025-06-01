@@ -3,7 +3,7 @@ import { collection, query, onSnapshot, doc, updateDoc, orderBy, where } from 'f
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Package, Truck, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Package, Truck, CheckCircle, AlertTriangle, DollarSign } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -87,10 +87,10 @@ const AdminDashboard: React.FC = () => {
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case 'order_placed':
-        return 'bg-blue-100 text-blue-800';
-      case 'preparing':
+      case 'awaiting_payment':
         return 'bg-yellow-100 text-yellow-800';
+      case 'preparing':
+        return 'bg-blue-100 text-blue-800';
       case 'out_for_delivery':
         return 'bg-purple-100 text-purple-800';
       case 'delivered':
@@ -174,10 +174,10 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-4">
                   <button
                     onClick={() => updateOrderStatus(selectedOrder, 'preparing')}
-                    className="btn w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white"
+                    className="btn w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
                   >
-                    <Package size={18} />
-                    Mark as Preparing
+                    <DollarSign size={18} />
+                    Confirm Payment & Start Preparing
                   </button>
                   
                   <button

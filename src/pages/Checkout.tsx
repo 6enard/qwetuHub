@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Phone, User, Home, AlertCircle } from 'lucide-react';
+import { Phone, User, Home, AlertCircle, CreditCard } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
-import { initiateSTKPush } from '../lib/mpesa';
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -28,46 +27,20 @@ const Checkout: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setError(null); // Clear error when user makes changes
+    setError(null);
   };
 
-  const validatePhone = (phone: string): string => {
-    // Remove any non-digit characters
-    let cleaned = phone.replace(/\D/g, '');
-    
-    // If it starts with 0, replace with 254
-    if (cleaned.startsWith('0')) {
-      cleaned = '254' + cleaned.slice(1);
-    }
-    
-    // If it doesn't start with 254, add it
-    if (!cleaned.startsWith('254')) {
-      cleaned = '254' + cleaned;
-    }
-    
-    return cleaned;
-  };
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
     setError(null);
 
     try {
-      // Validate phone number
       if (formData.phone.length < 10) {
         throw new Error('Please enter a valid phone number');
       }
 
-      const formattedPhone = validatePhone(formData.phone);
       const totalAmount = totalPrice + 50; // Add delivery fee
-
-      // Initiate STK Push
-      const stkResponse = await initiateSTKPush(formattedPhone, totalAmount);
-      
-      if (!stkResponse || !stkResponse.CheckoutRequestID) {
-        throw new Error('Failed to initiate payment. Please try again.');
-      }
 
       // Create order in Firestore
       const orderRef = await addDoc(collection(db, 'orders'), {
@@ -81,27 +54,26 @@ const Checkout: React.FC = () => {
         })),
         customerInfo: {
           name: formData.name,
-          phone: formattedPhone,
+          phone: formData.phone,
           roomNumber: formData.roomNumber,
           hostel: formData.hostel
         },
-        status: 'pending',
-        trackingStatus: 'order_placed',
+        status: 'pending_payment',
+        trackingStatus: 'awaiting_payment',
         trackingUpdates: [{
-          status: 'order_placed',
+          status: 'awaiting_payment',
           timestamp: new Date().toISOString(),
-          message: 'Order has been placed successfully'
+          message: 'Order placed, waiting for payment confirmation'
         }],
         totalAmount,
-        checkoutRequestId: stkResponse.CheckoutRequestID,
         createdAt: new Date().toISOString()
       });
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);
     } catch (error) {
-      console.error('Error processing payment:', error);
-      setError(error instanceof Error ? error.message : 'Failed to process payment. Please try again.');
+      console.error('Error processing order:', error);
+      setError(error instanceof Error ? error.message : 'Failed to process order. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -122,6 +94,17 @@ const Checkout: React.FC = () => {
                 <span>{error}</span>
               </div>
             )}
+
+            {/* Payment Instructions */}
+            <div className="mb-8 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+              <h3 className="font-medium text-orange-800 mb-2">Payment Instructions:</h3>
+              <ol className="list-decimal list-inside space-y-2 text-orange-700">
+                <li>Send the total amount to M-Pesa number: <span className="font-bold">0740087715</span></li>
+                <li>Take a screenshot of the M-Pesa confirmation message</li>
+                <li>Send the screenshot via WhatsApp to <span className="font-bold">0740087715</span></li>
+                <li>Your order will be processed once payment is confirmed</li>
+              </ol>
+            </div>
             
             <div className="space-y-4">
               <div>
@@ -148,7 +131,7 @@ const Checkout: React.FC = () => {
               
               <div>
                 <label htmlFor="phone" className="block text-gray-700 font-medium mb-2">
-                  Phone Number (M-Pesa)
+                  Phone Number
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -169,9 +152,6 @@ const Checkout: React.FC = () => {
                     maxLength={12}
                   />
                 </div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Enter your M-Pesa number starting with 07XX or 01XX
-                </p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,7 +195,7 @@ const Checkout: React.FC = () => {
             </div>
             
             <div className="mt-8">
-              <h2 className="text-xl font-bold mb-4">Payment Summary</h2>
+              <h2 className="text-xl font-bold mb-4">Order Summary</h2>
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="space-y-2">
                   <div className="flex justify-between">
@@ -228,22 +208,10 @@ const Checkout: React.FC = () => {
                   </div>
                   <div className="pt-2 border-t border-gray-200">
                     <div className="flex justify-between font-bold">
-                      <span>Total</span>
+                      <span>Total to Pay</span>
                       <span>KES {totalPrice + 50}</span>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center mb-6">
-                <div className="bg-green-100 p-2 rounded-full mr-3">
-                  <CreditCard size={20} className="text-green-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-green-800">M-Pesa Payment</p>
-                  <p className="text-sm text-green-700">
-                    You will receive a payment prompt on your phone
-                  </p>
                 </div>
               </div>
 
@@ -259,10 +227,10 @@ const Checkout: React.FC = () => {
                 {isProcessing ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Processing Payment...
+                    Processing Order...
                   </div>
                 ) : (
-                  'Pay Now'
+                  'Place Order'
                 )}
               </button>
             </div>

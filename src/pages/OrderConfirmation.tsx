@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Package, Clock, Home, Download } from 'lucide-react';
+import { CheckCircle, Package, Clock, Home, Download, AlertCircle } from 'lucide-react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
@@ -26,7 +26,7 @@ interface OrderData {
     message: string;
   }>;
   createdAt: string;
-  userId: string; // Add userId to track order ownership
+  userId: string;
 }
 
 const OrderConfirmation: React.FC = () => {
@@ -49,7 +49,6 @@ const OrderConfirmation: React.FC = () => {
       (doc) => {
         if (doc.exists()) {
           const data = doc.data() as OrderData;
-          // Only set order data if the user owns the order or is an admin
           if (data.userId === user.uid || user.email === '6enard@gmail.com') {
             setOrderData(data);
             setError(null);
@@ -83,8 +82,9 @@ const OrderConfirmation: React.FC = () => {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-8">
-          {error}
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-8 flex items-center justify-center gap-2">
+          <AlertCircle size={20} />
+          <span>{error}</span>
         </div>
         <Link to="/" className="btn btn-primary">
           Return to Home
@@ -102,7 +102,7 @@ const OrderConfirmation: React.FC = () => {
   }
 
   const getStepNumber = (status: string) => {
-    const steps = ['order_placed', 'preparing', 'out_for_delivery', 'delivered'];
+    const steps = ['awaiting_payment', 'preparing', 'out_for_delivery', 'delivered'];
     return steps.indexOf(status) + 1;
   };
 
@@ -131,10 +131,14 @@ Subtotal: KES ${orderData.totalAmount - 50}
 Delivery Fee: KES 50
 Total Amount: KES ${orderData.totalAmount}
 
-Thank you for shopping with QWETUHub!
-We appreciate your business and hope to serve you again soon.
+Payment Instructions:
+-------------------
+1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
+2. Take a screenshot of the M-Pesa confirmation message
+3. Send the screenshot via WhatsApp to 0740087715
+4. Your order will be processed once payment is confirmed
 
-Visit us at www.qwetuhub.com for more great deals!
+Thank you for shopping with QWETUHub!
     `;
 
     const blob = new Blob([receipt], { type: 'text/plain' });
@@ -157,11 +161,22 @@ Visit us at www.qwetuhub.com for more great deals!
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-center">
-            Thank You for Your Order!
+            Order Placed Successfully!
           </h1>
           <p className="text-gray-600 mb-6 text-sm sm:text-base text-center">
             Your order <span className="font-semibold">#{orderId}</span> has been placed successfully.
           </p>
+
+          {/* Payment Instructions */}
+          <div className="mb-8 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <h3 className="font-medium text-orange-800 mb-2">Complete Your Payment:</h3>
+            <ol className="list-decimal list-inside space-y-2 text-orange-700">
+              <li>Send <span className="font-bold">KES {orderData.totalAmount}</span> to M-Pesa number: <span className="font-bold">0740087715</span></li>
+              <li>Take a screenshot of the M-Pesa confirmation message</li>
+              <li>Send the screenshot via WhatsApp to <span className="font-bold">0740087715</span></li>
+              <li>Your order will be processed once payment is confirmed</li>
+            </ol>
+          </div>
 
           {/* Order Status */}
           <div className="mb-10">
@@ -175,7 +190,7 @@ Visit us at www.qwetuhub.com for more great deals!
 
               <div className="flex justify-between relative px-2 sm:px-4">
                 {[
-                  { label: 'Confirmed', icon: <CheckCircle size={24} />, status: 'order_placed' },
+                  { label: 'Payment', icon: <CheckCircle size={24} />, status: 'awaiting_payment' },
                   { label: 'Preparing', icon: <Package size={24} />, status: 'preparing' },
                   { label: 'On the Way', icon: <Clock size={24} />, status: 'out_for_delivery' },
                   { label: 'Delivered', icon: <Home size={24} />, status: 'delivered' }
@@ -199,7 +214,7 @@ Visit us at www.qwetuhub.com for more great deals!
 
           {/* Tracking Updates */}
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h3 className="font-medium text-gray-800 mb-3">Tracking Updates</h3>
+            <h3 className="font-medium text-gray-800 mb-3">Order Updates</h3>
             <div className="space-y-3">
               {orderData.trackingUpdates.map((update, index) => (
                 <div key={index} className="flex items-start gap-3">
@@ -215,22 +230,17 @@ Visit us at www.qwetuhub.com for more great deals!
             </div>
           </div>
 
-          {/* Download Receipt */}
-          <button
-            onClick={generateReceipt}
-            className="btn btn-secondary w-full sm:w-auto mb-6 sm:mb-4 flex items-center justify-center gap-2"
-          >
-            <Download size={18} />
-            Download Receipt
-          </button>
-
-          {/* Links */}
+          {/* Actions */}
           <div className="flex flex-col sm:flex-row sm:justify-center gap-3">
+            <button
+              onClick={generateReceipt}
+              className="btn btn-secondary flex items-center justify-center gap-2"
+            >
+              <Download size={18} />
+              Download Receipt
+            </button>
             <Link to="/" className="btn btn-primary text-center">
               Return to Home
-            </Link>
-            <Link to="/products" className="btn btn-secondary text-center">
-              Continue Shopping
             </Link>
           </div>
         </div>

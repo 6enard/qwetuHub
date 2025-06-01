@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, User, Home, Mail } from 'lucide-react';
+import { Phone, User, Home, Mail, MessageSquare } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -17,6 +17,7 @@ const Checkout: React.FC = () => {
     email: '',
     roomNumber: '',
     hostel: 'Qwetu Ruaraka',
+    additionalNotes: ''
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ const Checkout: React.FC = () => {
     return null;
   }
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError(null);
@@ -34,23 +35,26 @@ const Checkout: React.FC = () => {
 
   const sendOrderNotification = async (orderId: string) => {
     try {
-      const now = new Date();
       const formattedItems = items.map(item => ({
-        item_name: item.product.name,
+        name: item.product.name,
         quantity: item.quantity,
-        unit_price: item.product.price,
-        total_price: item.product.price * item.quantity
+        price: item.product.price,
+        subtotal: item.product.price * item.quantity
       }));
 
       const templateParams = {
         order_id: orderId,
-        order_date: now.toLocaleDateString(),
-        order_time: now.toLocaleTimeString(),
+        order_date: new Date().toLocaleDateString(),
+        order_time: new Date().toLocaleTimeString(),
         customer_name: formData.name,
         customer_phone: formData.phone,
+        customer_email: formData.email,
         customer_hostel: formData.hostel,
         customer_room: formData.roomNumber,
-        items: formattedItems,
+        additional_notes: formData.additionalNotes || 'No additional notes',
+        items_list: formattedItems.map(item => 
+          `${item.name} x${item.quantity} @ KES ${item.price} = KES ${item.subtotal}`
+        ).join('\n'),
         subtotal: totalPrice,
         delivery_fee: 50,
         total_amount: totalPrice + 50
@@ -94,7 +98,8 @@ const Checkout: React.FC = () => {
           phone: formData.phone,
           email: formData.email,
           roomNumber: formData.roomNumber,
-          hostel: formData.hostel
+          hostel: formData.hostel,
+          additionalNotes: formData.additionalNotes
         },
         status: 'pending_payment',
         trackingStatus: 'awaiting_payment',
@@ -239,6 +244,26 @@ const Checkout: React.FC = () => {
                     placeholder="e.g. A123"
                     className="input"
                     required
+                    disabled={isProcessing}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="additionalNotes" className="block text-gray-700 font-medium mb-2">
+                  Additional Notes (Optional)
+                </label>
+                <div className="relative">
+                  <div className="absolute top-3 left-3">
+                    <MessageSquare size={18} className="text-gray-400" />
+                  </div>
+                  <textarea
+                    id="additionalNotes"
+                    name="additionalNotes"
+                    value={formData.additionalNotes}
+                    onChange={handleChange}
+                    placeholder="Any special instructions or requests?"
+                    className="input pl-10 min-h-[100px]"
                     disabled={isProcessing}
                   />
                 </div>

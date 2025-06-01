@@ -1,3 +1,7 @@
+import React, { useState } from 'react';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+
 // Update the form data state to include email
 const [formData, setFormData] = useState({
   name: '',

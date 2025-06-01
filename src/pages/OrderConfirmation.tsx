@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Package, Clock, Home, Download, AlertCircle } from 'lucide-react';
+import { CheckCircle, Package, Clock, Home, Download, AlertCircle, MessageCircle } from 'lucide-react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
@@ -35,6 +35,11 @@ const OrderConfirmation: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+
+  const openWhatsApp = () => {
+    const message = encodeURIComponent(`Hi, I've placed order #${orderId} and made the payment. Here's my payment screenshot.`);
+    window.open(`https://wa.me/254740087715?text=${message}`, '_blank');
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -127,10 +132,6 @@ ${orderData.items.map(item =>
   `${item.name} x${item.quantity} @ KES ${item.price} = KES ${item.subtotal}`
 ).join('\n')}
 
-Subtotal: KES ${orderData.totalAmount - 50}
-Delivery Fee: KES 50
-Total Amount: KES ${orderData.totalAmount}
-
 Payment Instructions:
 -------------------
 1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
@@ -173,7 +174,16 @@ Thank you for shopping with QWETUHub!
             <ol className="list-decimal list-inside space-y-2 text-orange-700">
               <li>Send <span className="font-bold">KES {orderData.totalAmount}</span> to M-Pesa number: <span className="font-bold">0740087715</span></li>
               <li>Take a screenshot of the M-Pesa confirmation message</li>
-              <li>Send the screenshot via WhatsApp to <span className="font-bold">0740087715</span></li>
+              <li>
+                Send the screenshot via WhatsApp{' '}
+                <button 
+                  onClick={openWhatsApp}
+                  className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium"
+                >
+                  <MessageCircle size={16} />
+                  Open WhatsApp
+                </button>
+              </li>
               <li>Your order will be processed once payment is confirmed</li>
             </ol>
           </div>

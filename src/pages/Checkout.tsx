@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, User, Home, AlertCircle, CreditCard } from 'lucide-react';
+import { Phone, User, Home, AlertCircle, CreditCard, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -28,6 +28,11 @@ const Checkout: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError(null);
+  };
+
+  const openWhatsApp = () => {
+    const message = encodeURIComponent("Hi, I'd like to place an order for delivery.");
+    window.open(`https://wa.me/254740087715?text=${message}`, '_blank');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -101,7 +106,17 @@ const Checkout: React.FC = () => {
               <ol className="list-decimal list-inside space-y-2 text-orange-700">
                 <li>Send the total amount to M-Pesa number: <span className="font-bold">0740087715</span></li>
                 <li>Take a screenshot of the M-Pesa confirmation message</li>
-                <li>Send the screenshot via WhatsApp to <span className="font-bold">0740087715</span></li>
+                <li>
+                  Send the screenshot via WhatsApp{' '}
+                  <button 
+                    type="button"
+                    onClick={openWhatsApp}
+                    className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium"
+                  >
+                    <MessageCircle size={16} />
+                    Open WhatsApp
+                  </button>
+                </li>
                 <li>Your order will be processed once payment is confirmed</li>
               </ol>
             </div>

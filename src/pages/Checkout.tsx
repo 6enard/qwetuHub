@@ -35,8 +35,8 @@ const Checkout: React.FC = () => {
 
   const sendOrderNotification = async (orderId: string) => {
     try {
-      // Create items array with proper structure for the template
-      const items = items.map(item => ({
+      // Use the items from useCart hook directly
+      const orderItems = items.map(item => ({
         item_name: item.product.name,
         quantity: item.quantity,
         unit_price: item.product.price,
@@ -53,7 +53,7 @@ const Checkout: React.FC = () => {
         customer_hostel: formData.hostel,
         customer_room: formData.roomNumber,
         additional_notes: formData.additionalNotes || 'No additional notes',
-        items: items, // Pass the items array directly for #each loop in template
+        items: orderItems,
         subtotal: totalPrice,
         delivery_fee: 50,
         total_amount: totalPrice + 50

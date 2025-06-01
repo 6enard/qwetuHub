@@ -36,7 +36,7 @@ const Checkout: React.FC = () => {
     try {
       const itemsList = items.map(item => 
         `${item.product.name} x${item.quantity} - KES ${item.product.price * item.quantity}`
-      ).join('\\n');
+      ).join('\n');
 
       const templateParams = {
         customer_name: formData.name,
@@ -56,7 +56,7 @@ const Checkout: React.FC = () => {
         'service_8h3ixun',
         'template_5wm5fq7',
         templateParams,
-        'YOUR_PUBLIC_KEY' // Replace with your actual public key
+        'odeWgS5PvV3YKOWsU'
       );
     } catch (error) {
       console.error('Error sending email notification:', error);

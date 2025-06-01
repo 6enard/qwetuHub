@@ -66,7 +66,8 @@ const Checkout: React.FC = () => {
           message: 'Order placed, waiting for payment confirmation'
         }],
         totalAmount,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        notificationEmail: '6enard@gmail.com' // Add notification email
       });
 
       await clearCart();

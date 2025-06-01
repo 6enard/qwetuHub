@@ -1,9 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const MPESA_API_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
-const CONSUMER_KEY = Deno.env.get('MPESA_CONSUMER_KEY');
-const CONSUMER_SECRET = Deno.env.get('MPESA_CONSUMER_SECRET');
-const BUSINESS_NUMBER = Deno.env.get('MPESA_BUSINESS_NUMBER');
+const CONSUMER_KEY = Deno.env.get('VITE_MPESA_CONSUMER_KEY');
+const CONSUMER_SECRET = Deno.env.get('VITE_MPESA_CONSUMER_SECRET');
+const BUSINESS_NUMBER = Deno.env.get('VITE_MPESA_BUSINESS_NUMBER');
+const PASSKEY = Deno.env.get('VITE_MPESA_PASSKEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,6 +26,10 @@ async function getAccessToken() {
       }
     );
     
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
     const data = await response.json();
     
     if (!data.access_token) {
@@ -39,6 +44,7 @@ async function getAccessToken() {
 }
 
 serve(async (req) => {
+  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -46,6 +52,7 @@ serve(async (req) => {
   try {
     const { phoneNumber, amount } = await req.json();
 
+    // Validate input
     if (!phoneNumber || !amount) {
       return new Response(
         JSON.stringify({ error: 'Phone number and amount are required' }),
@@ -56,9 +63,20 @@ serve(async (req) => {
       );
     }
 
+    // Validate environment variables
+    if (!CONSUMER_KEY || !CONSUMER_SECRET || !BUSINESS_NUMBER || !PASSKEY) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required environment variables' }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
     const accessToken = await getAccessToken();
     const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
-    const password = btoa(`${BUSINESS_NUMBER}${CONSUMER_SECRET}${timestamp}`);
+    const password = btoa(`${BUSINESS_NUMBER}${PASSKEY}${timestamp}`);
 
     const response = await fetch(MPESA_API_URL, {
       method: 'POST',
@@ -81,6 +99,10 @@ serve(async (req) => {
       })
     });
 
+    if (!response.ok) {
+      throw new Error(`M-Pesa API error! status: ${response.status}`);
+    }
+
     const data = await response.json();
 
     return new Response(
@@ -92,7 +114,10 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error processing M-Pesa request:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to process payment request' }),
+      JSON.stringify({ 
+        error: 'Failed to process payment request',
+        details: error.message 
+      }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

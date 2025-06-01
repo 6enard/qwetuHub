@@ -141,3 +141,5 @@ const ProductDetail: React.FC = () => {
     </div>
   );
 };
+
+export default ProductDetail

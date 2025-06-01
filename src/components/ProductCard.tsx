@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Info } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 
 interface ProductCardProps {
   product: Product;
@@ -12,18 +11,11 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) => {
   const { addItem } = useCart();
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    
     addItem(product, 1);
   };
 
@@ -76,5 +68,3 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) 
     </div>
   );
 };
-
-export default ProductCard;

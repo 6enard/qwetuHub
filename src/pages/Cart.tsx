@@ -1,11 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import QuantitySelector from '../components/QuantitySelector';
 
 const Cart: React.FC = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (!user) {
+      navigate('/login', { state: { from: '/checkout' } });
+      return;
+    }
+    navigate('/checkout');
+  };
 
   if (items.length === 0) {
     return (
@@ -106,9 +117,12 @@ const Cart: React.FC = () => {
                 </div>
               </div>
               
-              <Link to="/checkout" className="btn btn-primary w-full">
-                Proceed to Checkout
-              </Link>
+              <button 
+                onClick={handleCheckout}
+                className="btn btn-primary w-full"
+              >
+                {user ? 'Proceed to Checkout' : 'Sign in to Checkout'}
+              </button>
               
               <Link to="/products" className="mt-4 block text-center text-blue-600 hover:underline">
                 Continue Shopping
@@ -120,5 +134,3 @@ const Cart: React.FC = () => {
     </div>
   );
 };
-
-export default Cart;

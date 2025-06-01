@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ShoppingCart, ArrowLeft } from 'lucide-react';
 import { getProductById, getProductsByCategory } from '../data/products';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext'; // ✅ Import AuthContext
 import ProductCard from '../components/ProductCard';
 import QuantitySelector from '../components/QuantitySelector';
 
@@ -12,7 +11,6 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
-  const { user } = useAuth(); // ✅ Get current user
 
   const product = id ? getProductById(id) : null;
 
@@ -35,13 +33,7 @@ const ProductDetail: React.FC = () => {
     .slice(0, 4);
 
   const handleAddToCart = () => {
-    if (!user) {
-      alert("Please sign in to add items to your cart.");
-      navigate("/login"); // ✅ Redirect to login if not authenticated
-      return;
-    }
-
-    addItem(product, quantity); // ✅ Only add if authenticated
+    addItem(product, quantity);
   };
 
   const handleIncreaseQuantity = () => {
@@ -149,5 +141,3 @@ const ProductDetail: React.FC = () => {
     </div>
   );
 };
-
-export default ProductDetail;

@@ -35,11 +35,12 @@ const Checkout: React.FC = () => {
 
   const sendOrderNotification = async (orderId: string) => {
     try {
-      const formattedItems = items.map(item => ({
-        name: item.product.name,
+      // Create items array with proper structure for the template
+      const items = items.map(item => ({
+        item_name: item.product.name,
         quantity: item.quantity,
-        price: item.product.price,
-        subtotal: item.product.price * item.quantity
+        unit_price: item.product.price,
+        total_price: item.product.price * item.quantity
       }));
 
       const templateParams = {
@@ -52,9 +53,7 @@ const Checkout: React.FC = () => {
         customer_hostel: formData.hostel,
         customer_room: formData.roomNumber,
         additional_notes: formData.additionalNotes || 'No additional notes',
-        items_list: formattedItems.map(item => 
-          `${item.name} x${item.quantity} @ KES ${item.price} = KES ${item.subtotal}`
-        ).join('\n'),
+        items: items, // Pass the items array directly for #each loop in template
         subtotal: totalPrice,
         delivery_fee: 50,
         total_amount: totalPrice + 50

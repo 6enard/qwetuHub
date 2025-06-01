@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, onSnapshot, doc, updateDoc, orderBy } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, updateDoc, orderBy, where, Timestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Package, Truck, CheckCircle, AlertTriangle, DollarSign, MessageCircle, Phone } from 'lucide-react';
+import { Package, Truck, CheckCircle, AlertTriangle, DollarSign, MessageCircle, Phone, Clock } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -29,10 +29,14 @@ interface Order {
   }>;
 }
 
+type TimeFilter = 'hour' | 'day' | 'week' | 'month' | 'all';
+type StatusFilter = 'all' | 'awaiting_payment' | 'preparing' | 'out_for_delivery' | 'delivered';
+
 const AdminDashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'today'>('today');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('day');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -42,13 +46,38 @@ const AdminDashboard: React.FC = () => {
       return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    let startTime: Date;
+    const now = new Date();
 
-    const q = query(
+    switch (timeFilter) {
+      case 'hour':
+        startTime = new Date(now.getTime() - 60 * 60 * 1000);
+        break;
+      case 'day':
+        startTime = new Date(now.setHours(0, 0, 0, 0));
+        break;
+      case 'week':
+        startTime = new Date(now.setDate(now.getDate() - 7));
+        break;
+      case 'month':
+        startTime = new Date(now.setMonth(now.getMonth() - 1));
+        break;
+      default:
+        startTime = new Date(0); // Beginning of time for 'all'
+    }
+
+    let q = query(
       collection(db, 'orders'),
       orderBy('createdAt', 'desc')
     );
+
+    if (timeFilter !== 'all') {
+      q = query(
+        collection(db, 'orders'),
+        where('createdAt', '>=', startTime.toISOString()),
+        orderBy('createdAt', 'desc')
+      );
+    }
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const orderData: Order[] = [];
@@ -56,12 +85,7 @@ const AdminDashboard: React.FC = () => {
         const data = doc.data() as Omit<Order, 'id'>;
         const order = { id: doc.id, ...data };
         
-        if (filter === 'today') {
-          const orderDate = new Date(order.createdAt);
-          if (orderDate >= today) {
-            orderData.push(order);
-          }
-        } else {
+        if (statusFilter === 'all' || order.trackingStatus === statusFilter) {
           orderData.push(order);
         }
       });
@@ -69,7 +93,7 @@ const AdminDashboard: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, [isAdmin, navigate, filter]);
+  }, [isAdmin, navigate, timeFilter, statusFilter]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
@@ -130,20 +154,79 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <div className="flex gap-2">
+        
+        <div className="flex flex-wrap gap-2">
+          {/* Time Filters */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setTimeFilter('hour')}
+              className={`btn ${timeFilter === 'hour' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              <Clock size={16} className="mr-1" />
+              Last Hour
+            </button>
+            <button
+              onClick={() => setTimeFilter('day')}
+              className={`btn ${timeFilter === 'day' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              Today
+            </button>
+            <button
+              onClick={() => setTimeFilter('week')}
+              className={`btn ${timeFilter === 'week' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              This Week
+            </button>
+            <button
+              onClick={() => setTimeFilter('month')}
+              className={`btn ${timeFilter === 'month' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              This Month
+            </button>
+            <button
+              onClick={() => setTimeFilter('all')}
+              className={`btn ${timeFilter === 'all' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              All Time
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Status Filters */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-2">
           <button
-            onClick={() => setFilter('today')}
-            className={`btn ${filter === 'today' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setStatusFilter('all')}
+            className={`btn ${statusFilter === 'all' ? 'btn-primary' : 'btn-secondary'}`}
           >
-            Today's Orders
+            All States
           </button>
           <button
-            onClick={() => setFilter('all')}
-            className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setStatusFilter('awaiting_payment')}
+            className={`btn ${statusFilter === 'awaiting_payment' ? 'bg-yellow-500 text-white' : 'bg-yellow-100 text-yellow-800'}`}
           >
-            All Orders
+            Awaiting Payment
+          </button>
+          <button
+            onClick={() => setStatusFilter('preparing')}
+            className={`btn ${statusFilter === 'preparing' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-800'}`}
+          >
+            Preparing
+          </button>
+          <button
+            onClick={() => setStatusFilter('out_for_delivery')}
+            className={`btn ${statusFilter === 'out_for_delivery' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-800'}`}
+          >
+            Out for Delivery
+          </button>
+          <button
+            onClick={() => setStatusFilter('delivered')}
+            className={`btn ${statusFilter === 'delivered' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-800'}`}
+          >
+            Delivered
           </button>
         </div>
       </div>
@@ -154,7 +237,7 @@ const AdminDashboard: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-bold mb-4">
-                {filter === 'today' ? "Today's Orders" : 'All Orders'} ({orders.length})
+                Orders ({orders.length})
               </h2>
               
               {orders.length === 0 ? (

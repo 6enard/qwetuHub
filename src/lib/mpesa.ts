@@ -8,17 +8,63 @@ interface STKResponse {
   CustomerMessage: string;
 }
 
+const MPESA_API_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+const CONSUMER_KEY = 'sYs9Ig9SvbwVOqqiJ6psYKJWBu1wi3kzG7YXN2ApwL2BYdxO';
+const CONSUMER_SECRET = 'xailp5i99ryshgC3L7BnP17dPTNAvvxAXlKlOOyHQmWqbcUkDQowxMkIsc4o7EYr';
+const BUSINESS_NUMBER = '0740087715';
+
+const getAccessToken = async () => {
+  const auth = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
+  
+  try {
+    const response = await axios.get(
+      'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.data.access_token) {
+      throw new Error('Invalid access token response');
+    }
+    
+    return response.data.access_token;
+  } catch (error) {
+    console.error('Error getting access token:', error);
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.errorMessage || 'Failed to authenticate with M-Pesa');
+    }
+    throw new Error('Network error while authenticating with M-Pesa');
+  }
+};
+
 export const initiateSTKPush = async (phoneNumber: string, amount: number): Promise<STKResponse> => {
   try {
+    const accessToken = await getAccessToken();
+    const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
+    const password = btoa(`${BUSINESS_NUMBER}${CONSUMER_SECRET}${timestamp}`);
+
     const response = await axios.post<STKResponse>(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/mpesa`,
+      MPESA_API_URL,
       {
-        phoneNumber,
-        amount
+        BusinessShortCode: BUSINESS_NUMBER,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: 'CustomerPayBillOnline',
+        Amount: Math.round(amount),
+        PartyA: phoneNumber,
+        PartyB: BUSINESS_NUMBER,
+        PhoneNumber: phoneNumber,
+        CallBackURL: 'https://example.com/callback',
+        AccountReference: 'QWETUHub',
+        TransactionDesc: 'Payment for supplies'
       },
       {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       }
@@ -32,8 +78,8 @@ export const initiateSTKPush = async (phoneNumber: string, amount: number): Prom
   } catch (error) {
     console.error('Error initiating STK push:', error);
     if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || 'Payment initiation failed');
+      throw new Error(error.response.data.errorMessage || 'Failed to initiate payment');
     }
-    throw new Error('Failed to initiate payment. Please try again.');
+    throw new Error('Network error while processing payment');
   }
 };

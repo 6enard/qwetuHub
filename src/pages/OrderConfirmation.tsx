@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, Package, Clock, Home, Download, AlertCircle, MessageCircle, Share2 } from 'lucide-react';
+import { CheckCircle, Package, Clock, Home, Download, AlertCircle, Share2 } from 'lucide-react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
@@ -36,14 +36,25 @@ const OrderConfirmation: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
-  const openWhatsApp = (withReceipt: boolean = false) => {
-    let message = `Hi, I've placed order #${orderId} and made the payment.`;
-    if (withReceipt) {
-      message += ' Here is my order receipt for confirmation:';
-    } else {
-      message += ' I will send the payment screenshot shortly.';
-    }
-    window.open(`https://wa.me/254740087715?text=${encodeURIComponent(message)}`, '_blank');
+  const shareReceiptOnWhatsApp = () => {
+    if (!orderData) return;
+
+    const receipt = `
+Order #${orderId}
+Date: ${new Date(orderData.createdAt).toLocaleDateString()}
+
+Items:
+${orderData.items.map(item => `${item.name} x${item.quantity} = KES ${item.subtotal}`).join('\n')}
+
+Total Amount: KES ${orderData.totalAmount}
+
+Customer Details:
+Name: ${orderData.customerInfo.name}
+Room: ${orderData.customerInfo.roomNumber}
+Hostel: ${orderData.customerInfo.hostel}`;
+
+    const url = `https://wa.me/254740087715?text=${encodeURIComponent(receipt)}`;
+    window.open(url, '_blank');
   };
 
   const generateReceipt = () => {
@@ -74,14 +85,12 @@ Total Amount: KES ${orderData.totalAmount}
 Payment Instructions:
 -------------------
 1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
-2. Take a screenshot of the M-Pesa confirmation message
-3. Send the screenshot via WhatsApp to 0740087715
-4. Your order will be processed once payment is confirmed
+2. Send the receipt via WhatsApp
+3. Your order will be processed once payment is confirmed
 
 Order Status: ${orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}
 
-Thank you for shopping with QWETUHub!
-    `;
+Thank you for shopping with QWETUHub!`;
 
     const blob = new Blob([receipt], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
@@ -186,17 +195,7 @@ Thank you for shopping with QWETUHub!
             <h3 className="font-medium text-orange-800 mb-2">Complete Your Payment:</h3>
             <ol className="list-decimal list-inside space-y-2 text-orange-700">
               <li>Send <span className="font-bold">KES {orderData.totalAmount}</span> to M-Pesa number: <span className="font-bold">0740087715</span></li>
-              <li>Take a screenshot of the M-Pesa confirmation message</li>
-              <li>
-                Send the screenshot via WhatsApp{' '}
-                <button 
-                  onClick={() => openWhatsApp(false)}
-                  className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium"
-                >
-                  <MessageCircle size={16} />
-                  Open WhatsApp
-                </button>
-              </li>
+              <li>Send the receipt via WhatsApp</li>
               <li>Your order will be processed once payment is confirmed</li>
             </ol>
           </div>
@@ -263,7 +262,7 @@ Thank you for shopping with QWETUHub!
               Download Receipt
             </button>
             <button
-              onClick={() => openWhatsApp(true)}
+              onClick={shareReceiptOnWhatsApp}
               className="btn bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
             >
               <Share2 size={18} />

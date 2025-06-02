@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, LogOut, Package } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, LogOut, Package, HelpCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
@@ -79,6 +79,9 @@ const Navbar: React.FC = () => {
               </Link>
               <Link to="/products" className="text-gray-700 hover:text-fuchsia-800 font-medium">
                 Products
+              </Link>
+              <Link to="/faq" className="text-gray-700 hover:text-fuchsia-800 font-medium">
+                How It Works
               </Link>
               {user && !isAdmin && (
                 <Link to="/my-orders" className="text-gray-700 hover:text-fuchsia-800 font-medium">
@@ -188,6 +191,12 @@ const Navbar: React.FC = () => {
                 className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium"
               >
                 Products
+              </Link>
+              <Link
+                to="/faq"
+                className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium"
+              >
+                How It Works
               </Link>
               {user && !isAdmin && (
                 <Link

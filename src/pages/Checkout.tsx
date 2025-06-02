@@ -33,9 +33,8 @@ const Checkout: React.FC = () => {
     setError(null);
   };
 
-  const sendOrderNotifications = async (orderId: string) => {
+  const sendOrderNotification = async (orderId: string) => {
     try {
-      // Send email notification
       const templateParams = {
         order_id: orderId,
         order_date: new Date().toLocaleDateString(),
@@ -64,23 +63,8 @@ const Checkout: React.FC = () => {
         templateParams,
         'odeWgS5PvV3YKOWsU'
       );
-
-      // Send SMS notification
-      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-sms`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          orderId,
-          customerName: formData.name,
-          totalAmount: totalPrice + 50,
-          trackingUrl: `${window.location.origin}/confirmation/${orderId}`
-        })
-      });
     } catch (error) {
-      console.error('Error sending notifications:', error);
+      console.error('Error sending email notification:', error);
     }
   };
 
@@ -125,8 +109,8 @@ const Checkout: React.FC = () => {
         createdAt: new Date().toISOString()
       });
 
-      // Send notifications
-      await sendOrderNotifications(orderRef.id);
+      // Send email notification
+      await sendOrderNotification(orderRef.id);
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);

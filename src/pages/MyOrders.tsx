@@ -130,3 +130,5 @@ const MyOrders: React.FC = () => {
     </div>
   );
 }
+
+export default MyOrders

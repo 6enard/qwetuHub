@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, LogOut, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { totalItems } = useCart();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const location = useLocation();
 
   // Dropdown state
@@ -80,6 +80,16 @@ const Navbar: React.FC = () => {
               <Link to="/products" className="text-gray-700 hover:text-fuchsia-800 font-medium">
                 Products
               </Link>
+              {user && !isAdmin && (
+                <Link to="/my-orders" className="text-gray-700 hover:text-fuchsia-800 font-medium">
+                  My Orders
+                </Link>
+              )}
+              {isAdmin && (
+                <Link to="/admin" className="text-gray-700 hover:text-fuchsia-800 font-medium">
+                  Admin
+                </Link>
+              )}
             </nav>
 
             {/* Desktop Right Section */}
@@ -103,6 +113,16 @@ const Navbar: React.FC = () => {
                   </button>
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                      {!isAdmin && (
+                        <Link
+                          to="/my-orders"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <Package size={16} />
+                          <span>My Orders</span>
+                        </Link>
+                      )}
                       <button
                         onClick={handleLogout}
                         className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
@@ -169,6 +189,22 @@ const Navbar: React.FC = () => {
               >
                 Products
               </Link>
+              {user && !isAdmin && (
+                <Link
+                  to="/my-orders"
+                  className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium"
+                >
+                  My Orders
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium"
+                >
+                  Admin
+                </Link>
+              )}
               <div className="relative mt-3 mb-2">
                 <Link to="/products" className="text-gray-700 hover:text-fuchsia-800">
                   <Search size={20} />

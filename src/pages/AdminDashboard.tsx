@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, onSnapshot, orderBy, where, Timestamp, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, where, Timestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Clock, Plus, Edit, Trash2 } from 'lucide-react';
-import { Product, Category } from '../types';
+import { AlertTriangle, Clock } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -39,29 +38,8 @@ const AdminDashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('day');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [showProductModal, setShowProductModal] = useState(false);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
-
-  // Product form state
-  const [productForm, setProductForm] = useState({
-    name: '',
-    price: '',
-    description: '',
-    image: '',
-    category: '',
-    stock: '',
-    featured: false
-  });
-
-  // Category form state
-  const [categoryForm, setCategoryForm] = useState({
-    name: '',
-    icon: ''
-  });
 
   useEffect(() => {
     if (!isAdmin) {
@@ -118,74 +96,6 @@ const AdminDashboard: React.FC = () => {
     return () => unsubscribe();
   }, [isAdmin, navigate, timeFilter, statusFilter]);
 
-  const handleProductSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const productData = {
-        ...productForm,
-        price: Number(productForm.price),
-        stock: Number(productForm.stock),
-      };
-
-      if (selectedProduct) {
-        await updateDoc(doc(db, 'products', selectedProduct.id), productData);
-      } else {
-        await addDoc(collection(db, 'products'), productData);
-      }
-
-      setShowProductModal(false);
-      setSelectedProduct(null);
-      setProductForm({
-        name: '',
-        price: '',
-        description: '',
-        image: '',
-        category: '',
-        stock: '',
-        featured: false
-      });
-    } catch (error) {
-      console.error('Error saving product:', error);
-    }
-  };
-
-  const handleCategorySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (selectedCategory) {
-        await updateDoc(doc(db, 'categories', selectedCategory.id), categoryForm);
-      } else {
-        await addDoc(collection(db, 'categories'), categoryForm);
-      }
-
-      setShowCategoryModal(false);
-      setSelectedCategory(null);
-      setCategoryForm({ name: '', icon: '' });
-    } catch (error) {
-      console.error('Error saving category:', error);
-    }
-  };
-
-  const handleDeleteProduct = async (productId: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
-      try {
-        await deleteDoc(doc(db, 'products', productId));
-      } catch (error) {
-        console.error('Error deleting product:', error);
-      }
-    }
-  };
-
-  const handleDeleteCategory = async (categoryId: string) => {
-    if (confirm('Are you sure you want to delete this category?')) {
-      try {
-        await deleteDoc(doc(db, 'categories', categoryId));
-      } catch (error) {
-        console.error('Error deleting category:', error);
-      }
-    }
-  };
-
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case 'awaiting_payment':
@@ -209,23 +119,6 @@ const AdminDashboard: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setShowProductModal(true)}
-            className="btn btn-primary flex items-center gap-2"
-          >
-            <Plus size={18} />
-            Add Product
-          </button>
-          <button
-            onClick={() => setShowCategoryModal(true)}
-            className="btn btn-secondary flex items-center gap-2"
-          >
-            <Plus size={18} />
-            Add Category
-          </button>
-        </div>
       </div>
 
       {/* Time Filters */}
@@ -345,154 +238,6 @@ const AdminDashboard: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Product Modal */}
-      {showProductModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">
-              {selectedProduct ? 'Edit Product' : 'Add New Product'}
-            </h2>
-            <form onSubmit={handleProductSubmit}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Name</label>
-                  <input
-                    type="text"
-                    value={productForm.name}
-                    onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Price (KES)</label>
-                  <input
-                    type="number"
-                    value={productForm.price}
-                    onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Description</label>
-                  <textarea
-                    value={productForm.description}
-                    onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Image URL</label>
-                  <input
-                    type="url"
-                    value={productForm.image}
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Category</label>
-                  <input
-                    type="text"
-                    value={productForm.category}
-                    onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Stock</label>
-                  <input
-                    type="number"
-                    value={productForm.stock}
-                    onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={productForm.featured}
-                    onChange={(e) => setProductForm({ ...productForm, featured: e.target.checked })}
-                    className="mr-2"
-                  />
-                  <label className="text-sm font-medium">Featured Product</label>
-                </div>
-              </div>
-              <div className="flex justify-end gap-2 mt-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowProductModal(false);
-                    setSelectedProduct(null);
-                  }}
-                  className="btn btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  {selectedProduct ? 'Update' : 'Add'} Product
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Category Modal */}
-      {showCategoryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">
-              {selectedCategory ? 'Edit Category' : 'Add New Category'}
-            </h2>
-            <form onSubmit={handleCategorySubmit}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Name</label>
-                  <input
-                    type="text"
-                    value={categoryForm.name}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Icon</label>
-                  <input
-                    type="text"
-                    value={categoryForm.icon}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })}
-                    className="input"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end gap-2 mt-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCategoryModal(false);
-                    setSelectedCategory(null);
-                  }}
-                  className="btn btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  {selectedCategory ? 'Update' : 'Add'} Category
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

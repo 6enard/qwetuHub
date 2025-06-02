@@ -11,6 +11,7 @@ import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import OrderDetails from './pages/OrderDetails';
+import MyOrders from './pages/MyOrders';
 import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
@@ -30,9 +31,15 @@ function App() {
           <Route path="confirmation/:orderId" element={<OrderConfirmation />} />
           <Route path="login" element={<Login />} />
           <Route 
+            path="my-orders" 
+            element={
+              !user ? <Navigate to="/login" replace /> : <MyOrders />
+            } 
+          />
+          <Route 
             path="admin" 
             element={
-              !user ? <Navigate to="/login\" replace /> :
+              !user ? <Navigate to="/login" replace /> :
               isAdmin ? <AdminDashboard /> : 
               <Navigate to="/" replace />
             } 
@@ -40,7 +47,7 @@ function App() {
           <Route
             path="admin/orders/:orderId"
             element={
-              !user ? <Navigate to="/login\" replace /> :
+              !user ? <Navigate to="/login" replace /> :
               isAdmin ? <OrderDetails /> :
               <Navigate to="/" replace />
             }

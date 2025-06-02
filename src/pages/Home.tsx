@@ -70,7 +70,7 @@ const Home: React.FC = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2">Easy Payment</h3>
               <p className="text-gray-600">
-                Pay with Safaricom M-Pesa STK push for secure and convenient transactions.
+                Pay with Safaricom M-Pesa for secure and convenient transactions.
               </p>
             </div>
 

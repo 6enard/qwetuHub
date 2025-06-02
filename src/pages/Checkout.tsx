@@ -33,16 +33,9 @@ const Checkout: React.FC = () => {
     setError(null);
   };
 
-  const sendOrderNotification = async (orderId: string) => {
+  const sendOrderNotifications = async (orderId: string) => {
     try {
-      // Use the items from useCart hook directly
-      const orderItems = items.map(item => ({
-        item_name: item.product.name,
-        quantity: item.quantity,
-        unit_price: item.product.price,
-        total_price: item.product.price * item.quantity
-      }));
-
+      // Send email notification
       const templateParams = {
         order_id: orderId,
         order_date: new Date().toLocaleDateString(),
@@ -53,10 +46,16 @@ const Checkout: React.FC = () => {
         customer_hostel: formData.hostel,
         customer_room: formData.roomNumber,
         additional_notes: formData.additionalNotes || 'No additional notes',
-        items: orderItems,
+        items: items.map(item => ({
+          item_name: item.product.name,
+          quantity: item.quantity,
+          unit_price: item.product.price,
+          total_price: item.product.price * item.quantity
+        })),
         subtotal: totalPrice,
         delivery_fee: 50,
-        total_amount: totalPrice + 50
+        total_amount: totalPrice + 50,
+        tracking_url: `${window.location.origin}/confirmation/${orderId}`
       };
 
       await emailjs.send(
@@ -65,8 +64,23 @@ const Checkout: React.FC = () => {
         templateParams,
         'odeWgS5PvV3YKOWsU'
       );
+
+      // Send SMS notification
+      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-sms`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          orderId,
+          customerName: formData.name,
+          totalAmount: totalPrice + 50,
+          trackingUrl: `${window.location.origin}/confirmation/${orderId}`
+        })
+      });
     } catch (error) {
-      console.error('Error sending email notification:', error);
+      console.error('Error sending notifications:', error);
     }
   };
 
@@ -111,8 +125,8 @@ const Checkout: React.FC = () => {
         createdAt: new Date().toISOString()
       });
 
-      // Send email notification
-      await sendOrderNotification(orderRef.id);
+      // Send notifications
+      await sendOrderNotifications(orderRef.id);
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);
@@ -317,3 +331,5 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
+
+export default Checkout

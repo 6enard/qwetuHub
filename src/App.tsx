@@ -10,6 +10,7 @@ import OrderConfirmation from './pages/OrderConfirmation';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import OrderDetails from './pages/OrderDetails';
 import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
@@ -31,10 +32,18 @@ function App() {
           <Route 
             path="admin" 
             element={
-              !user ? <Navigate to="/login\" replace /> :
+              !user ? <Navigate to="/login" replace /> :
               isAdmin ? <AdminDashboard /> : 
               <Navigate to="/" replace />
             } 
+          />
+          <Route
+            path="admin/orders/:orderId"
+            element={
+              !user ? <Navigate to="/login" replace /> :
+              isAdmin ? <OrderDetails /> :
+              <Navigate to="/" replace />
+            }
           />
           <Route path="*" element={<NotFound />} />
         </Route>

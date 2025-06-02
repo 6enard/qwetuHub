@@ -32,7 +32,7 @@ function App() {
           <Route 
             path="admin" 
             element={
-              !user ? <Navigate to="/login" replace /> :
+              !user ? <Navigate to="/login\" replace /> :
               isAdmin ? <AdminDashboard /> : 
               <Navigate to="/" replace />
             } 
@@ -40,7 +40,7 @@ function App() {
           <Route
             path="admin/orders/:orderId"
             element={
-              !user ? <Navigate to="/login" replace /> :
+              !user ? <Navigate to="/login\" replace /> :
               isAdmin ? <OrderDetails /> :
               <Navigate to="/" replace />
             }

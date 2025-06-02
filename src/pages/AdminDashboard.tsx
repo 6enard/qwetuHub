@@ -3,15 +3,17 @@ import { collection, query, onSnapshot, doc, updateDoc, orderBy, where, Timestam
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Package, Truck, CheckCircle, AlertTriangle, DollarSign, MessageCircle, Phone, Clock } from 'lucide-react';
+import { Package, Truck, CheckCircle, AlertTriangle, DollarSign, MessageCircle, Phone, Clock, User, Home, Mail } from 'lucide-react';
 
 interface Order {
   id: string;
   customerInfo: {
     name: string;
     phone: string;
+    email: string;
     roomNumber: string;
     hostel: string;
+    additionalNotes?: string;
   };
   items: Array<{
     name: string;
@@ -63,7 +65,7 @@ const AdminDashboard: React.FC = () => {
         startTime = new Date(now.setMonth(now.getMonth() - 1));
         break;
       default:
-        startTime = new Date(0); // Beginning of time for 'all'
+        startTime = new Date(0);
     }
 
     let q = query(
@@ -140,13 +142,37 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const openWhatsApp = (phone: string) => {
-    window.open(`https://wa.me/254${phone.slice(-9)}`, '_blank');
+  const openWhatsApp = (order: Order) => {
+    const message = `
+*Order #${order.id}*
+Date: ${new Date(order.createdAt).toLocaleDateString()}
+Time: ${new Date(order.createdAt).toLocaleTimeString()}
+
+*Customer Details:*
+Name: ${order.customerInfo.name}
+Phone: ${order.customerInfo.phone}
+Email: ${order.customerInfo.email}
+Room: ${order.customerInfo.roomNumber}
+Hostel: ${order.customerInfo.hostel}
+${order.customerInfo.additionalNotes ? `\nNotes: ${order.customerInfo.additionalNotes}` : ''}
+
+*Order Items:*
+${order.items.map(item => `• ${item.name} x${item.quantity} = KES ${item.subtotal}`).join('\n')}
+
+Subtotal: KES ${order.totalAmount - 50}
+Delivery Fee: KES 50
+*Total Amount: KES ${order.totalAmount}*
+
+Status: ${order.trackingStatus.replace(/_/g, ' ').toUpperCase()}`;
+
+    window.open(`https://wa.me/254${order.customerInfo.phone.slice(-9)}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const makePhoneCall = (phone: string) => {
     window.location.href = `tel:${phone}`;
   };
+
+  const selectedOrderData = selectedOrder ? orders.find(o => o.id === selectedOrder) : null;
 
   if (!isAdmin) {
     return null;
@@ -250,8 +276,10 @@ const AdminDashboard: React.FC = () => {
                   {orders.map((order) => (
                     <div
                       key={order.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                        selectedOrder === order.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                      className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
+                        selectedOrder === order.id 
+                          ? 'border-blue-500 bg-blue-50 shadow-md' 
+                          : 'hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       onClick={() => setSelectedOrder(order.id)}
                     >
@@ -267,50 +295,46 @@ const AdminDashboard: React.FC = () => {
                         </span>
                       </div>
                       
-                      <div className="text-sm text-gray-600">
-                        <p className="font-medium">{order.customerInfo.name}</p>
-                        <div className="flex items-center gap-2">
-                          <p>Room {order.customerInfo.roomNumber}, {order.customerInfo.hostel}</p>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              makePhoneCall(order.customerInfo.phone);
-                            }}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            <Phone size={16} />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openWhatsApp(order.customerInfo.phone);
-                            }}
-                            className="text-green-600 hover:text-green-800"
-                          >
-                            <MessageCircle size={16} />
-                          </button>
-                        </div>
-                        <p className="font-medium mt-1">KES {order.totalAmount}</p>
-                      </div>
-
-                      <div className="mt-2">
-                        <p className="font-medium">Items:</p>
-                        {order.items.map((item, index) => (
-                          <div key={index} className="text-sm text-gray-600 flex justify-between">
-                            <span>{item.quantity}x {item.name}</span>
-                            <span>KES {item.subtotal}</span>
+                      <div className="grid grid-cols-2 gap-4 mt-3">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <User size={16} />
+                            <span>{order.customerInfo.name}</span>
                           </div>
-                        ))}
-                      </div>
-
-                      {order.trackingUpdates && (
-                        <div className="mt-3 pt-3 border-t">
-                          <p className="font-medium text-sm mb-1">Latest Update:</p>
-                          <p className="text-sm text-gray-600">
-                            {order.trackingUpdates[0]?.message}
-                          </p>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Home size={16} />
+                            <span>Room {order.customerInfo.roomNumber}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Mail size={16} />
+                            <span className="truncate">{order.customerInfo.email}</span>
+                          </div>
                         </div>
-                      )}
+                        
+                        <div className="text-right">
+                          <p className="font-medium text-lg mb-2">KES {order.totalAmount}</p>
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                makePhoneCall(order.customerInfo.phone);
+                              }}
+                              className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
+                            >
+                              <Phone size={16} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openWhatsApp(order);
+                              }}
+                              className="p-2 rounded-full bg-green-100 text-green-600 hover:bg-green-200"
+                            >
+                              <MessageCircle size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -323,66 +347,110 @@ const AdminDashboard: React.FC = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-sm overflow-hidden sticky top-24">
             <div className="p-6">
-              <h2 className="text-xl font-bold mb-4">Order Actions</h2>
+              <h2 className="text-xl font-bold mb-4">Order Details</h2>
               
-              {selectedOrder ? (
-                <div className="space-y-4">
-                  <button
-                    onClick={() => updateOrderStatus(selectedOrder, 'preparing')}
-                    className="btn w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
-                  >
-                    <DollarSign size={18} />
-                    Confirm Payment & Start Preparing
-                  </button>
-                  
-                  <button
-                    onClick={() => updateOrderStatus(selectedOrder, 'out_for_delivery')}
-                    className="btn w-full flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white"
-                  >
-                    <Truck size={18} />
-                    Mark as Out for Delivery
-                  </button>
-                  
-                  <button
-                    onClick={() => updateOrderStatus(selectedOrder, 'delivered')}
-                    className="btn w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white"
-                  >
-                    <CheckCircle size={18} />
-                    Mark as Delivered
-                  </button>
-
-                  {/* Contact Customer */}
-                  {selectedOrder && orders.find(o => o.id === selectedOrder)?.customerInfo && (
-                    <div className="pt-4 border-t">
-                      <h3 className="font-medium mb-3">Contact Customer</h3>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => {
-                            const order = orders.find(o => o.id === selectedOrder);
-                            if (order) makePhoneCall(order.customerInfo.phone);
-                          }}
-                          className="btn flex-1 bg-blue-100 text-blue-700 hover:bg-blue-200"
-                        >
-                          <Phone size={18} className="mr-2" />
-                          Call
-                        </button>
-                        <button
-                          onClick={() => {
-                            const order = orders.find(o => o.id === selectedOrder);
-                            if (order) openWhatsApp(order.customerInfo.phone);
-                          }}
-                          className="btn flex-1 bg-green-100 text-green-700 hover:bg-green-200"
-                        >
-                          <MessageCircle size={18} className="mr-2" />
-                          WhatsApp
-                        </button>
+              {selectedOrderData ? (
+                <div className="space-y-6">
+                  {/* Customer Details */}
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-medium mb-3">Customer Information</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <User size={16} className="text-gray-500" />
+                        <span>{selectedOrderData.customerInfo.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone size={16} className="text-gray-500" />
+                        <span>{selectedOrderData.customerInfo.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Mail size={16} className="text-gray-500" />
+                        <span className="truncate">{selectedOrderData.customerInfo.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Home size={16} className="text-gray-500" />
+                        <span>Room {selectedOrderData.customerInfo.roomNumber}, {selectedOrderData.customerInfo.hostel}</span>
                       </div>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Order Items */}
+                  <div>
+                    <h3 className="font-medium mb-3">Order Items</h3>
+                    <div className="space-y-2">
+                      {selectedOrderData.items.map((item, index) => (
+                        <div key={index} className="flex justify-between items-center">
+                          <span className="text-gray-600">
+                            {item.quantity}x {item.name}
+                          </span>
+                          <span className="font-medium">KES {item.subtotal}</span>
+                        </div>
+                      ))}
+                      <div className="border-t pt-2 mt-2">
+                        <div className="flex justify-between text-gray-600">
+                          <span>Subtotal</span>
+                          <span>KES {selectedOrderData.totalAmount - 50}</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>Delivery Fee</span>
+                          <span>KES 50</span>
+                        </div>
+                        <div className="flex justify-between font-bold mt-1">
+                          <span>Total</span>
+                          <span>KES {selectedOrderData.totalAmount}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Order Actions */}
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => updateOrderStatus(selectedOrderData.id, 'preparing')}
+                      className="btn w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      <DollarSign size={18} />
+                      Confirm Payment & Start Preparing
+                    </button>
+                    
+                    <button
+                      onClick={() => updateOrderStatus(selectedOrderData.id, 'out_for_delivery')}
+                      className="btn w-full flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white"
+                    >
+                      <Truck size={18} />
+                      Mark as Out for Delivery
+                    </button>
+                    
+                    <button
+                      onClick={() => updateOrderStatus(selectedOrderData.id, 'delivered')}
+                      className="btn w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      <CheckCircle size={18} />
+                      Mark as Delivered
+                    </button>
+                  </div>
+
+                  {/* Contact Actions */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => makePhoneCall(selectedOrderData.customerInfo.phone)}
+                      className="btn flex-1 bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    >
+                      <Phone size={18} className="mr-2" />
+                      Call
+                    </button>
+                    <button
+                      onClick={() => openWhatsApp(selectedOrderData)}
+                      className="btn flex-1 bg-green-100 text-green-700 hover:bg-green-200"
+                    >
+                      <MessageCircle size={18} className="mr-2" />
+                      WhatsApp
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <p className="text-gray-500 text-center">
-                  Select an order to update its status
+                  Select an order to view details and take actions
                 </p>
               )}
             </div>

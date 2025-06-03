@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDEG7QnBG-Q7FsL4E4aB3EdV1k-QXaLxcs",
@@ -14,16 +14,13 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
 
-// Enable offline persistence
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code === 'failed-precondition') {
-    console.warn('Multiple tabs open, persistence disabled');
-  } else if (err.code === 'unimplemented') {
-    console.warn('Browser doesn\'t support persistence');
-  }
+// Initialize Firestore with persistent cache
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache(
+    { tabManager: persistentMultipleTabManager() }
+  )
 });
 
+export const googleProvider = new GoogleAuthProvider();
 export const ADMIN_EMAIL = '6enard@gmail.com';

@@ -59,6 +59,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+          type="button"
         >
           <X size={20} />
         </button>
@@ -105,7 +106,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="input pl-10"
-                placeholder="Enter your password"
+                placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
                 required
               />
             </div>
@@ -146,6 +147,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
             onClick={handleGoogleSignIn}
             disabled={loading}
             className="mt-4 w-full btn btn-secondary flex items-center justify-center gap-2"
+            type="button"
           >
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
             Continue with Google
@@ -157,6 +159,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
           <button
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-blue-600 hover:text-blue-800 font-medium"
+            type="button"
           >
             {isSignUp ? 'Sign In' : 'Sign Up'}
           </button>

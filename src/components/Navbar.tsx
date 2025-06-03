@@ -110,6 +110,7 @@ const Navbar: React.FC = () => {
                     className="flex items-center space-x-2 text-gray-700 hover:text-fuchsia-800 focus:outline-none"
                     aria-expanded={isUserMenuOpen}
                     aria-haspopup="true"
+                    type="button"
                   >
                     <User size={20} />
                     <span className="text-sm font-medium">{user.email?.split('@')[0]}</span>
@@ -129,6 +130,7 @@ const Navbar: React.FC = () => {
                       <button
                         onClick={handleLogout}
                         className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                        type="button"
                       >
                         <LogOut size={16} />
                         <span>Sign Out</span>
@@ -140,6 +142,7 @@ const Navbar: React.FC = () => {
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
                   className="text-gray-700 hover:text-fuchsia-800 font-medium"
+                  type="button"
                 >
                   Sign In
                 </button>
@@ -169,6 +172,7 @@ const Navbar: React.FC = () => {
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-gray-700"
+                type="button"
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -226,7 +230,8 @@ const Navbar: React.FC = () => {
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium"
+                    className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium w-full text-left"
+                    type="button"
                   >
                     Sign Out
                   </button>
@@ -235,6 +240,7 @@ const Navbar: React.FC = () => {
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
                   className="block py-2 text-gray-700 hover:text-fuchsia-800 font-medium"
+                  type="button"
                 >
                   Sign In
                 </button>

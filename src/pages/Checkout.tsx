@@ -6,11 +6,13 @@ import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import emailjs from '@emailjs/browser';
+import { calculateDeliveryFee } from '../utils/deliveryFee';
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const deliveryFee = calculateDeliveryFee(totalPrice);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -54,8 +56,8 @@ const Checkout: React.FC = () => {
           total_price: item.product.price * item.quantity
         })),
         subtotal: totalPrice,
-        delivery_fee: 50,
-        total_amount: totalPrice + 50,
+        delivery_fee: deliveryFee,
+        total_amount: totalPrice + deliveryFee,
         tracking_url: `${window.location.origin}/confirmation/${orderId}`
       };
 
@@ -80,7 +82,7 @@ const Checkout: React.FC = () => {
         throw new Error('Please enter a valid phone number');
       }
 
-      const totalAmount = totalPrice + 50; // Add delivery fee
+      const totalAmount = totalPrice + deliveryFee;
 
       // Create order in Firestore
       const orderRef = await addDoc(collection(db, 'orders'), {
@@ -108,6 +110,8 @@ const Checkout: React.FC = () => {
           message: 'Order placed, waiting for payment confirmation'
         }],
         totalAmount,
+        deliveryFee,
+        subtotal: totalPrice,
         createdAt: new Date().toISOString()
       });
 
@@ -280,12 +284,12 @@ const Checkout: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Delivery Fee</span>
-                    <span>KES 50</span>
+                    <span>KES {deliveryFee}</span>
                   </div>
                   <div className="pt-2 border-t border-gray-200">
                     <div className="flex justify-between font-bold">
                       <span>Total to Pay</span>
-                      <span>KES {totalPrice + 50}</span>
+                      <span>KES {totalPrice + deliveryFee}</span>
                     </div>
                   </div>
                 </div>

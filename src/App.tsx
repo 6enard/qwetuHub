@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import OrderConfirmation from './pages/OrderConfirmation';
-import NotFound from './pages/NotFound';
-import Login from './pages/Login';
-import AdminDashboard from './pages/AdminDashboard';
-import OrderDetails from './pages/OrderDetails';
-import MyOrders from './pages/MyOrders';
-import FAQ from './pages/FAQ';
 import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
+
+// Lazy load components
+const Home = React.lazy(() => import('./pages/Home'));
+const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
+const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const Cart = React.lazy(() => import('./pages/Cart'));
+const Checkout = React.lazy(() => import('./pages/Checkout'));
+const OrderConfirmation = React.lazy(() => import('./pages/OrderConfirmation'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
+const Login = React.lazy(() => import('./pages/Login'));
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const OrderDetails = React.lazy(() => import('./pages/OrderDetails'));
+const MyOrders = React.lazy(() => import('./pages/MyOrders'));
+const FAQ = React.lazy(() => import('./pages/FAQ'));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+  </div>
+);
 
 function App() {
   const { user, isAdmin } = useAuth();
@@ -24,37 +33,91 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="products" element={<ProductsPage />} />
-          <Route path="products/:id" element={<ProductDetail />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="confirmation/:orderId" element={<OrderConfirmation />} />
-          <Route path="login" element={<Login />} />
-          <Route path="faq" element={<FAQ />} />
+          <Route index element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <Home />
+            </Suspense>
+          } />
+          <Route path="products" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ProductsPage />
+            </Suspense>
+          } />
+          <Route path="products/:id" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ProductDetail />
+            </Suspense>
+          } />
+          <Route path="cart" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <Cart />
+            </Suspense>
+          } />
+          <Route path="checkout" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <Checkout />
+            </Suspense>
+          } />
+          <Route path="confirmation/:orderId" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <OrderConfirmation />
+            </Suspense>
+          } />
+          <Route path="login" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <Login />
+            </Suspense>
+          } />
+          <Route path="faq" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <FAQ />
+            </Suspense>
+          } />
           <Route 
             path="my-orders" 
             element={
-              !user ? <Navigate to="/login\" replace /> : <MyOrders />
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : (
+                <Suspense fallback={<LoadingSpinner />}>
+                  <MyOrders />
+                </Suspense>
+              )
             } 
           />
           <Route 
             path="admin" 
             element={
-              !user ? <Navigate to="/login\" replace /> :
-              isAdmin ? <AdminDashboard /> : 
-              <Navigate to="/" replace />
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : isAdmin ? (
+                <Suspense fallback={<LoadingSpinner />}>
+                  <AdminDashboard />
+                </Suspense>
+              ) : (
+                <Navigate to="/" replace />
+              )
             } 
           />
           <Route
             path="admin/orders/:orderId"
             element={
-              !user ? <Navigate to="/login\" replace /> :
-              isAdmin ? <OrderDetails /> :
-              <Navigate to="/" replace />
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : isAdmin ? (
+                <Suspense fallback={<LoadingSpinner />}>
+                  <OrderDetails />
+                </Suspense>
+              ) : (
+                <Navigate to="/" replace />
+              )
             }
           />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <NotFound />
+            </Suspense>
+          } />
         </Route>
       </Routes>
     </>

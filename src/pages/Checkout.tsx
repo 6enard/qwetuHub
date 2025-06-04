@@ -34,6 +34,8 @@ const Checkout: React.FC = () => {
   };
 
   const sendOrderNotification = async (orderId: string) => {
+    if (!formData.email) return; // Skip email notification if no email provided
+    
     try {
       const templateParams = {
         order_id: orderId,
@@ -93,7 +95,7 @@ const Checkout: React.FC = () => {
         customerInfo: {
           name: formData.name,
           phone: formData.phone,
-          email: formData.email,
+          email: formData.email || null,
           roomNumber: formData.roomNumber,
           hostel: formData.hostel,
           additionalNotes: formData.additionalNotes
@@ -109,8 +111,10 @@ const Checkout: React.FC = () => {
         createdAt: new Date().toISOString()
       });
 
-      // Send email notification
-      await sendOrderNotification(orderRef.id);
+      // Send email notification if email provided
+      if (formData.email) {
+        await sendOrderNotification(orderRef.id);
+      }
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);
@@ -122,7 +126,7 @@ const Checkout: React.FC = () => {
     }
   };
   
-  const isFormValid = formData.name && formData.phone && formData.email && formData.roomNumber;
+  const isFormValid = formData.name && formData.phone && formData.roomNumber;
   
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-10">
@@ -162,7 +166,7 @@ const Checkout: React.FC = () => {
 
               <div>
                 <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                  Email Address
+                  Email Address (Optional)
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -176,7 +180,6 @@ const Checkout: React.FC = () => {
                     onChange={handleChange}
                     placeholder="your@email.com"
                     className="input pl-10"
-                    required
                     disabled={isProcessing}
                   />
                 </div>

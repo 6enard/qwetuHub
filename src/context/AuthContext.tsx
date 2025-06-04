@@ -4,10 +4,9 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
-  signInWithPopup
+  onAuthStateChanged
 } from 'firebase/auth';
-import { auth, googleProvider, ADMIN_EMAIL } from '../lib/firebase';
+import { auth, ADMIN_EMAIL } from '../lib/firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -15,7 +14,6 @@ interface AuthContextType {
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -46,11 +44,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAdmin(result.user.email === ADMIN_EMAIL);
   };
 
-  const signInWithGoogle = async () => {
-    const result = await signInWithPopup(auth, googleProvider);
-    setIsAdmin(result.user.email === ADMIN_EMAIL);
-  };
-
   const logout = async () => {
     await signOut(auth);
     setIsAdmin(false);
@@ -62,7 +55,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAdmin,
     signIn,
     signUp,
-    signInWithGoogle,
     logout
   };
 

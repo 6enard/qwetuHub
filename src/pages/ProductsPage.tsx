@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+import { Search, FileText } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
 import { Product } from '../types';
@@ -40,7 +40,16 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Products</h1>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <h1 className="text-3xl font-bold">Products</h1>
+        <Link
+          to="/custom-order"
+          className="btn btn-secondary flex items-center gap-2 whitespace-nowrap"
+        >
+          <FileText size={18} />
+          Can't find what you need?
+        </Link>
+      </div>
       
       {/* Search Bar */}
       <div className="mb-6">
@@ -85,16 +94,25 @@ const ProductsPage: React.FC = () => {
       ) : (
         <div className="text-center py-16">
           <p className="text-lg text-gray-600 mb-4">No products found.</p>
-          <button
-            onClick={() => {
-              setSelectedCategory(null);
-              setSearchQuery('');
-              setFilteredProducts(products);
-            }}
-            className="btn btn-secondary"
-          >
-            Clear Filters
-          </button>
+          <div className="space-y-4">
+            <button
+              onClick={() => {
+                setSelectedCategory(null);
+                setSearchQuery('');
+                setFilteredProducts(products);
+              }}
+              className="btn btn-secondary"
+            >
+              Clear Filters
+            </button>
+            <div className="flex flex-col items-center">
+              <p className="text-gray-600 mb-2">or</p>
+              <Link to="/custom-order" className="btn btn-primary flex items-center gap-2">
+                <FileText size={18} />
+                Request Custom Order
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>

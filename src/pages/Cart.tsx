@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, ShoppingBag } from 'lucide-react';
+import { Trash2, ShoppingBag, AlertCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import QuantitySelector from '../components/QuantitySelector';
@@ -11,6 +11,10 @@ const Cart: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCheckout = () => {
+    if (totalPrice < 100) {
+      return; // Don't proceed if total is less than 100
+    }
+    
     if (!user) {
       navigate('/login', { state: { from: '/checkout' } });
       return;
@@ -116,10 +120,22 @@ const Cart: React.FC = () => {
                   <span>KES {totalPrice + 50}</span>
                 </div>
               </div>
+
+              {totalPrice < 100 && (
+                <div className="mb-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg flex items-center gap-2">
+                  <AlertCircle size={18} />
+                  <span>Minimum order amount is KES 100</span>
+                </div>
+              )}
               
               <button 
                 onClick={handleCheckout}
-                className="btn btn-primary w-full"
+                disabled={totalPrice < 100}
+                className={`btn w-full ${
+                  totalPrice < 100 
+                    ? 'bg-gray-300 cursor-not-allowed text-gray-700'
+                    : 'btn-primary'
+                }`}
               >
                 {user ? 'Proceed to Checkout' : 'Sign in to Checkout'}
               </button>
@@ -135,4 +151,4 @@ const Cart: React.FC = () => {
   );
 };
 
-export default Cart
+export default Cart;

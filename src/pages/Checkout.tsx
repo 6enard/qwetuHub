@@ -22,7 +22,7 @@ const Checkout: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  if (items.length === 0) {
+  if (items.length === 0 || totalPrice < 100) {
     navigate('/cart');
     return null;
   }
@@ -289,16 +289,6 @@ const Checkout: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Payment Instructions */}
-              <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                <h3 className="font-medium text-orange-800 mb-2">Payment Instructions:</h3>
-                <ol className="list-decimal list-inside space-y-2 text-orange-700">
-                  <li>Send <span className="font-bold">KES {totalPrice + 50}</span> to M-Pesa number: <span className="font-bold">0740087715</span></li>
-                  <li>Send the M-Pesa confirmation message via WhatsApp</li>
-                  <li>Your order will be processed once payment is confirmed</li>
-                </ol>
               </div>
 
               <button

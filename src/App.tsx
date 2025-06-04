@@ -17,7 +17,6 @@ const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const OrderDetails = React.lazy(() => import('./pages/OrderDetails'));
 const MyOrders = React.lazy(() => import('./pages/MyOrders'));
 const FAQ = React.lazy(() => import('./pages/FAQ'));
-const CustomOrder = React.lazy(() => import('./pages/CustomOrder'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -57,11 +56,6 @@ function App() {
           <Route path="checkout" element={
             <Suspense fallback={<LoadingSpinner />}>
               <Checkout />
-            </Suspense>
-          } />
-          <Route path="custom-order" element={
-            <Suspense fallback={<LoadingSpinner />}>
-              <CustomOrder />
             </Suspense>
           } />
           <Route path="confirmation/:orderId" element={

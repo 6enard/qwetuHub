@@ -40,18 +40,28 @@ const OrderConfirmation: React.FC = () => {
     if (!orderData) return;
 
     const receipt = `
+*QWETUHub Order Receipt*
 Order #${orderId}
 Date: ${new Date(orderData.createdAt).toLocaleDateString()}
+Time: ${new Date(orderData.createdAt).toLocaleTimeString()}
 
-Items:
-${orderData.items.map(item => `${item.name} x${item.quantity} = KES ${item.subtotal}`).join('\n')}
-
-Total Amount: KES ${orderData.totalAmount}
-
-Customer Details:
+*Customer Details:*
 Name: ${orderData.customerInfo.name}
 Room: ${orderData.customerInfo.roomNumber}
-Hostel: ${orderData.customerInfo.hostel}`;
+Hostel: ${orderData.customerInfo.hostel}
+
+*Order Items:*
+${orderData.items.map(item => `• ${item.name} x${item.quantity} = KES ${item.subtotal}`).join('\n')}
+
+Subtotal: KES ${orderData.totalAmount - 50}
+Delivery Fee: KES 50
+*Total Amount: KES ${orderData.totalAmount}*
+
+*Payment Instructions:*
+1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
+2. Send this receipt with your M-Pesa confirmation message
+
+Thank you for shopping with QWETUHub!`;
 
     const url = `https://wa.me/254740087715?text=${encodeURIComponent(receipt)}`;
     window.open(url, '_blank');

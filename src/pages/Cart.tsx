@@ -4,11 +4,13 @@ import { Trash2, ShoppingBag, AlertCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import QuantitySelector from '../components/QuantitySelector';
+import { calculateDeliveryFee } from '../utils/deliveryFee';
 
 const Cart: React.FC = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const deliveryFee = calculateDeliveryFee(totalPrice);
 
   const handleCheckout = () => {
     if (totalPrice < 100) {
@@ -113,11 +115,11 @@ const Cart: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Delivery Fee</span>
-                  <span>KES 50</span>
+                  <span>KES {deliveryFee}</span>
                 </div>
                 <div className="border-t pt-3 mt-3 flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>KES {totalPrice + 50}</span>
+                  <span>KES {totalPrice + deliveryFee}</span>
                 </div>
               </div>
 

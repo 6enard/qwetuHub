@@ -1,45 +1,3 @@
-import tomatoes from '../assets/products/tomatoes.jpeg';
-import onions from '../assets/products/onions.jpeg';
-import bellPepper from '../assets/products/bell-pepper.jpeg';
-import dania from '../assets/products/dania.jpeg';
-import ginger from '../assets/products/ginger.jpeg';
-import garlic from '../assets/products/garlic.jpeg';
-import samosa from '../assets/products/samosa.jpeg';
-import smokie from '../assets/products/smokie.jpeg';
-import egg from '../assets/products/egg.jpeg';
-import smocha from '../assets/products/smocha.jpeg';
-import fries from '../assets/products/fries.jpeg';
-import crisps from '../assets/products/crisps.jpeg';
-import iceCream from '../assets/products/ice-cream.jpeg';
-import chocolate from '../assets/products/chocolate.jpeg';
-import noodles from '../assets/products/noodles.jpeg';
-import water from '../assets/products/water.jpeg';
-import minuteMaid from '../assets/products/minute-maid.jpeg';
-import soda from '../assets/products/soda.jpeg';
-import freshJuice from '../assets/products/fresh-juice.jpeg';
-import tissues from '../assets/products/tissues.jpeg';
-import serviettes from '../assets/products/serviettes.jpeg';
-import barSoap from '../assets/products/bar-soap.jpeg';
-import bathingSoap from '../assets/products/bathing-soap.jpeg';
-import toothpaste from '../assets/products/toothpaste.jpeg';
-import toothbrush from '../assets/products/toothbrush.jpeg';
-import cottonBuds from '../assets/products/cotton-buds.jpeg';
-import vaseline from '../assets/products/vaseline.jpeg';
-import deodorant from '../assets/products/deodorant.jpeg';
-import lotion from '../assets/products/lotion.jpeg';
-import ballpoint from '../assets/products/ballpoint.jpeg';
-import pencil from '../assets/products/pencil.jpeg';
-import highlighter from '../assets/products/highlighter.jpeg';
-import notebook from '../assets/products/notebook.jpeg';
-import stickyNotes from '../assets/products/sticky-notes.jpeg';
-import washingPowder from '../assets/products/washing-powder.jpeg';
-import mop from '../assets/products/mop.jpeg';
-import antiseptic from '../assets/products/antiseptic.jpeg';
-import bleach from '../assets/products/bleach.jpeg';
-import fabricSoftener from '../assets/products/fabric-softener.jpeg';
-import scrubSponge from '../assets/products/scrub-sponge.jpeg';
-import dishSoap from '../assets/products/dish-soap.jpeg';
-
 import { Product, Category } from '../types';
 
 export const categories: Category[] = [
@@ -57,7 +15,7 @@ export const products: Product[] = [
     id: 'tomatoes',
     name: 'Fresh Tomatoes',
     price: 10,
-    image: tomatoes,
+    image: 'https://images.pexels.com/photos/533280/pexels-photo-533280.jpeg',
     category: 'groceries',
     description: 'Fresh, ripe tomatoes perfect for cooking or salads.',
     stock: 100,
@@ -66,7 +24,7 @@ export const products: Product[] = [
     id: 'onions',
     name: 'Onions',
     price: 20,
-    image: onions,
+    image: 'https://images.pexels.com/photos/4197447/pexels-photo-4197447.jpeg',
     category: 'groceries',
     description: 'Fresh onions to add flavor to your dishes.',
     stock: 100,
@@ -75,7 +33,7 @@ export const products: Product[] = [
     id: 'bell-pepper',
     name: 'Bell Pepper',
     price: 20,
-    image: bellPepper,
+    image: 'https://images.pexels.com/photos/6316643/pexels-photo-6316643.jpeg',
     category: 'groceries',
     description: 'Colorful bell peppers, perfect for stir-fries and salads.',
     stock: 50,
@@ -84,7 +42,7 @@ export const products: Product[] = [
     id: 'dania',
     name: 'Fresh Dania (Coriander)',
     price: 20,
-    image: dania,
+    image: 'https://images.pexels.com/photos/2893635/pexels-photo-2893635.jpeg',
     category: 'groceries',
     description: 'Fresh coriander leaves to garnish your dishes.',
     stock: 50,
@@ -93,7 +51,7 @@ export const products: Product[] = [
     id: 'ginger',
     name: 'Fresh Ginger',
     price: 20,
-    image: ginger,
+    image: 'https://images.pexels.com/photos/2615459/pexels-photo-2615459.jpeg',
     category: 'groceries',
     description: 'Fresh ginger root for cooking and tea.',
     stock: 50,
@@ -102,7 +60,7 @@ export const products: Product[] = [
     id: 'garlic',
     name: 'Garlic',
     price: 30,
-    image: garlic,
+    image: 'https://images.pexels.com/photos/4198177/pexels-photo-4198177.jpeg',
     category: 'groceries',
     description: 'Fresh garlic bulbs for cooking.',
     stock: 50,
@@ -113,7 +71,7 @@ export const products: Product[] = [
     id: 'samosa',
     name: 'Hot Samosa',
     price: 50,
-    image: samosa,
+    image: 'https://images.pexels.com/photos/9609838/pexels-photo-9609838.jpeg',
     category: 'snacks',
     description: 'Crispy, spicy samosas freshly made.',
     stock: 50,
@@ -123,7 +81,7 @@ export const products: Product[] = [
     id: 'smokie',
     name: 'Smokie',
     price: 40,
-    image: smokie,
+    image: 'https://images.pexels.com/photos/4109111/pexels-photo-4109111.jpeg',
     category: 'snacks',
     description: 'Delicious smokie sausage.',
     stock: 50,
@@ -132,7 +90,7 @@ export const products: Product[] = [
     id: 'egg',
     name: 'Boiled Egg',
     price: 30,
-    image: egg,
+    image: 'https://images.pexels.com/photos/4110226/pexels-photo-4110226.jpeg',
     category: 'snacks',
     description: 'Fresh boiled eggs.',
     stock: 50,
@@ -141,7 +99,7 @@ export const products: Product[] = [
     id: 'smocha',
     name: 'Smocha',
     price: 60,
-    image: smocha,
+    image: 'https://images.pexels.com/photos/2282532/pexels-photo-2282532.jpeg',
     category: 'snacks',
     description: 'Smokie and chapati combo.',
     stock: 50,
@@ -150,7 +108,7 @@ export const products: Product[] = [
     id: 'fries',
     name: 'Fresh Chips/Fries',
     price: 150,
-    image: fries,
+    image: 'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg',
     category: 'snacks',
     description: 'Hot, crispy french fries.',
     stock: 50,
@@ -160,7 +118,7 @@ export const products: Product[] = [
     id: 'crisps',
     name: 'Potato Crisps',
     price: 70,
-    image: crisps,
+    image: 'https://images.pexels.com/photos/5718041/pexels-photo-5718041.jpeg',
     category: 'snacks',
     description: 'Crunchy potato crisps.',
     stock: 100,
@@ -169,7 +127,7 @@ export const products: Product[] = [
     id: 'ice-cream',
     name: 'Ice Cream',
     price: 100,
-    image: iceCream,
+    image: 'https://images.pexels.com/photos/1352281/pexels-photo-1352281.jpeg',
     category: 'snacks',
     description: 'Creamy, delicious ice cream.',
     stock: 30,
@@ -178,7 +136,7 @@ export const products: Product[] = [
     id: 'chocolate',
     name: 'Chocolate Bar',
     price: 150,
-    image: chocolate,
+    image: 'https://images.pexels.com/photos/918327/pexels-photo-918327.jpeg',
     category: 'snacks',
     description: 'Rich chocolate bar.',
     stock: 50,
@@ -187,7 +145,7 @@ export const products: Product[] = [
     id: 'noodles',
     name: 'Instant Noodles',
     price: 50,
-    image: noodles,
+    image: 'https://images.pexels.com/photos/12256804/pexels-photo-12256804.jpeg',
     category: 'snacks',
     description: 'Quick and easy instant noodles.',
     stock: 100,
@@ -199,7 +157,7 @@ export const products: Product[] = [
     id: 'water',
     name: 'Refillable Water (1L)',
     price: 100,
-    image: water,
+    image: 'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg',
     category: 'beverages',
     description: 'Clean, refillable drinking water.',
     stock: 100,
@@ -209,7 +167,7 @@ export const products: Product[] = [
     id: 'minute-maid',
     name: 'Minute Maid',
     price: 100,
-    image: minuteMaid,
+    image: 'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg',
     category: 'beverages',
     description: 'Refreshing Minute Maid juice.',
     stock: 50,
@@ -218,7 +176,7 @@ export const products: Product[] = [
     id: 'soda',
     name: 'Soda',
     price: 80,
-    image: soda,
+    image: 'https://images.pexels.com/photos/2983100/pexels-photo-2983100.jpeg',
     category: 'beverages',
     description: 'Cold, refreshing soda.',
     stock: 100,
@@ -227,7 +185,7 @@ export const products: Product[] = [
     id: 'fresh-juice',
     name: 'Fresh Juice',
     price: 100,
-    image: freshJuice,
+    image: 'https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg',
     category: 'beverages',
     description: 'Freshly squeezed fruit juice.',
     stock: 30,
@@ -239,7 +197,7 @@ export const products: Product[] = [
     id: 'tissues',
     name: 'Tissues',
     price: 150,
-    image: tissues,
+    image: 'https://images.pexels.com/photos/4239012/pexels-photo-4239012.jpeg',
     category: 'toiletries',
     description: 'Soft facial tissues.',
     stock: 100,
@@ -248,7 +206,7 @@ export const products: Product[] = [
     id: 'serviettes',
     name: 'Serviettes',
     price: 150,
-    image: serviettes,
+    image: 'https://images.pexels.com/photos/4239028/pexels-photo-4239028.jpeg',
     category: 'toiletries',
     description: 'Quality paper serviettes.',
     stock: 100,
@@ -257,7 +215,7 @@ export const products: Product[] = [
     id: 'bar-soap',
     name: 'Bar Soap',
     price: 200,
-    image: barSoap,
+    image: 'https://images.pexels.com/photos/6621339/pexels-photo-6621339.jpeg',
     category: 'toiletries',
     description: 'Laundry bar soap.',
     stock: 50,
@@ -266,7 +224,7 @@ export const products: Product[] = [
     id: 'bathing-soap',
     name: 'Bathing Soap',
     price: 200,
-    image: bathingSoap,
+    image: 'https://images.pexels.com/photos/6621424/pexels-photo-6621424.jpeg',
     category: 'toiletries',
     description: 'Gentle bathing soap.',
     stock: 50,
@@ -275,7 +233,7 @@ export const products: Product[] = [
     id: 'toothpaste',
     name: 'Toothpaste',
     price: 100,
-    image: toothpaste,
+    image: 'https://images.pexels.com/photos/6724354/pexels-photo-6724354.jpeg',
     category: 'toiletries',
     description: 'Fresh mint toothpaste.',
     stock: 50,
@@ -284,7 +242,7 @@ export const products: Product[] = [
     id: 'toothbrush',
     name: 'Toothbrush',
     price: 150,
-    image: toothbrush,
+    image: 'https://images.pexels.com/photos/3101547/pexels-photo-3101547.jpeg',
     category: 'toiletries',
     description: 'Quality toothbrush.',
     stock: 50,
@@ -293,7 +251,7 @@ export const products: Product[] = [
     id: 'cotton-buds',
     name: 'Ear Cotton Buds',
     price: 150,
-    image: cottonBuds,
+    image: 'https://images.pexels.com/photos/4465829/pexels-photo-4465829.jpeg',
     category: 'toiletries',
     description: 'Soft cotton ear buds.',
     stock: 100,
@@ -302,7 +260,7 @@ export const products: Product[] = [
     id: 'vaseline',
     name: 'Vaseline',
     price: 50,
-    image: vaseline,
+    image: 'https://images.pexels.com/photos/6621264/pexels-photo-6621264.jpeg',
     category: 'toiletries',
     description: 'Moisturizing Vaseline.',
     stock: 50,
@@ -311,7 +269,7 @@ export const products: Product[] = [
     id: 'deodorant',
     name: 'Deodorant',
     price: 200,
-    image: deodorant,
+    image: 'https://images.pexels.com/photos/6621441/pexels-photo-6621441.jpeg',
     category: 'toiletries',
     description: 'Long-lasting deodorant.',
     stock: 30,
@@ -320,7 +278,7 @@ export const products: Product[] = [
     id: 'lotion',
     name: 'Body Lotion',
     price: 200,
-    image: lotion,
+    image: 'https://images.pexels.com/photos/6621429/pexels-photo-6621429.jpeg',
     category: 'toiletries',
     description: 'Moisturizing body lotion.',
     stock: 30,
@@ -331,7 +289,7 @@ export const products: Product[] = [
     id: 'ballpoint',
     name: 'Ballpoint Pen',
     price: 20,
-    image: ballpoint,
+    image: 'https://images.pexels.com/photos/6444/pencil-typography-black-design.jpg',
     category: 'stationery',
     description: 'Smooth writing ballpoint pen.',
     stock: 100,
@@ -340,7 +298,7 @@ export const products: Product[] = [
     id: 'pencil',
     name: 'Pencil',
     price: 20,
-    image: pencil,
+    image: 'https://images.pexels.com/photos/159752/pencil-office-design-creative-159752.jpeg',
     category: 'stationery',
     description: 'Standard HB pencil.',
     stock: 100,
@@ -349,7 +307,7 @@ export const products: Product[] = [
     id: 'highlighter',
     name: 'Highlighter',
     price: 100,
-    image: highlighter,
+    image: 'https://images.pexels.com/photos/1764436/pexels-photo-1764436.jpeg',
     category: 'stationery',
     description: 'Bright highlighter pen.',
     stock: 50,
@@ -358,7 +316,7 @@ export const products: Product[] = [
     id: 'notebook',
     name: 'Notebook',
     price: 150,
-    image: notebook,
+    image: 'https://images.pexels.com/photos/6694543/pexels-photo-6694543.jpeg',
     category: 'stationery',
     description: 'Quality notebook for notes.',
     stock: 50,
@@ -367,7 +325,7 @@ export const products: Product[] = [
     id: 'sticky-notes',
     name: 'Sticky Notes',
     price: 150,
-    image: stickyNotes,
+    image: 'https://images.pexels.com/photos/5834/nature-grass-leaf-green.jpg',
     category: 'stationery',
     description: 'Colorful sticky notes.',
     stock: 50,
@@ -378,7 +336,7 @@ export const products: Product[] = [
     id: 'washing-powder',
     name: 'Washing Powder',
     price: 150,
-    image: washingPowder,
+    image: 'https://images.pexels.com/photos/4239013/pexels-photo-4239013.jpeg',
     category: 'cleaning',
     description: 'Effective laundry detergent powder.',
     stock: 50,
@@ -387,7 +345,7 @@ export const products: Product[] = [
     id: 'mop',
     name: 'Mop',
     price: 500,
-    image: mop,
+    image: 'https://images.pexels.com/photos/4239036/pexels-photo-4239036.jpeg',
     category: 'cleaning',
     description: 'Durable floor mop.',
     stock: 20,
@@ -396,7 +354,7 @@ export const products: Product[] = [
     id: 'antiseptic',
     name: 'Antiseptic',
     price: 200,
-    image: antiseptic,
+    image: 'https://images.pexels.com/photos/4239040/pexels-photo-4239040.jpeg',
     category: 'cleaning',
     description: 'Powerful antiseptic cleaner.',
     stock: 30,
@@ -405,7 +363,7 @@ export const products: Product[] = [
     id: 'bleach',
     name: 'Bleach',
     price: 150,
-    image: bleach,
+    image: 'https://images.pexels.com/photos/4239029/pexels-photo-4239029.jpeg',
     category: 'cleaning',
     description: 'Strong bleach for deep cleaning.',
     stock: 30,
@@ -414,7 +372,7 @@ export const products: Product[] = [
     id: 'fabric-softener',
     name: 'Fabric Softener',
     price: 250,
-    image: fabricSoftener,
+    image: 'https://images.pexels.com/photos/4239027/pexels-photo-4239027.jpeg',
     category: 'cleaning',
     description: 'Pleasant-smelling fabric softener.',
     stock: 40,
@@ -423,7 +381,7 @@ export const products: Product[] = [
     id: 'scrub-sponge',
     name: 'Scrub Sponge',
     price: 100,
-    image: scrubSponge,
+    image: 'https://images.pexels.com/photos/4239026/pexels-photo-4239026.jpeg',
     category: 'cleaning',
     description: 'Durable scrubbing sponge.',
     stock: 100,
@@ -432,7 +390,7 @@ export const products: Product[] = [
     id: 'dish-soap',
     name: 'Dish Soap',
     price: 150,
-    image: dishSoap,
+    image: 'https://images.pexels.com/photos/4239037/pexels-photo-4239037.jpeg',
     category: 'cleaning',
     description: 'Effective dish washing liquid.',
     stock: 50,

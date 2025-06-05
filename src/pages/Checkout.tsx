@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, User, Home, Mail, MessageSquare } from 'lucide-react';
+import { Phone, User, Home, Mail, MessageSquare, AlertCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -35,8 +35,39 @@ const Checkout: React.FC = () => {
     setError(null);
   };
 
+  const initiatePayment = async (orderId: string, totalAmount: number) => {
+    try {
+      const phoneNumber = formData.phone.startsWith('0') 
+        ? `254${formData.phone.slice(1)}` 
+        : formData.phone;
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/intasend-payment`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phoneNumber,
+          amount: totalAmount,
+          orderId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to initiate payment');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Payment initiation error:', error);
+      throw new Error('Failed to initiate payment. Please try again.');
+    }
+  };
+
   const sendOrderNotification = async (orderId: string) => {
-    if (!formData.email) return; // Skip email notification if no email provided
+    if (!formData.email) return;
     
     try {
       const templateParams = {
@@ -115,6 +146,9 @@ const Checkout: React.FC = () => {
         createdAt: new Date().toISOString()
       });
 
+      // Initiate IntaSend payment
+      await initiatePayment(orderRef.id, totalAmount);
+
       // Send email notification if email provided
       if (formData.email) {
         await sendOrderNotification(orderRef.id);
@@ -141,6 +175,7 @@ const Checkout: React.FC = () => {
             
             {error && (
               <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
+                <AlertCircle size={20} />
                 <span>{error}</span>
               </div>
             )}

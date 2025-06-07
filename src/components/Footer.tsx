@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand section */}
           <div>
-            <h3 className="text-xl font-bold mb-4">HostelHub</h3>
+            <h3 className="text-xl font-bold mb-4">QWETUHub</h3>
             <p className="text-gray-300 mb-4">
               Making life easier for hostel students with convenient delivery of essential supplies.
             </p>
@@ -46,15 +46,14 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">Contact Us</h3>
             <ul className="space-y-2 text-gray-300">
-              <li>Email: support@hostelhub.com</li>
-              <li>Phone: +254 712 345 678</li>
-              <li>Hours: 8am - 10pm, Mon - Sun</li>
+              <li>Phone: +254 740 087 715</li>
+              
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-300">
-          <p>&copy; {new Date().getFullYear()} HostelHub. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} QWETUHub. All rights reserved.</p>
         </div>
       </div>
     </footer>

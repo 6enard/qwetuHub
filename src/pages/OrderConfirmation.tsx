@@ -53,13 +53,12 @@ Hostel: ${orderData.customerInfo.hostel}
 *Order Items:*
 ${orderData.items.map(item => `• ${item.name} x${item.quantity} = KES ${item.subtotal}`).join('\n')}
 
-Subtotal: KES ${orderData.totalAmount - 50}
-Delivery Fee: KES 50
+
 *Total Amount: KES ${orderData.totalAmount}*
 
 *Payment Instructions:*
 1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
-2. Send this receipt with your M-Pesa confirmation message
+2. Send this receipt via whatsapp and track your order
 
 Thank you for shopping with QWETUHub!`;
 

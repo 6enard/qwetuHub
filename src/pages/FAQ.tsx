@@ -50,7 +50,8 @@ const FAQ: React.FC = () => {
                     <li>Enter your delivery information accurately</li>
                     <li>Review your order summary</li>
                     <li>Send payment to M-Pesa number: 0740087715</li>
-                    <li>Share M-Pesa confirmation message via WhatsApp</li>
+                    <li>Share order receipt via WhatsApp</li>
+                    <li>Wait for confirmation and track your order</li>
                   </ol>
                 </div>
               </div>

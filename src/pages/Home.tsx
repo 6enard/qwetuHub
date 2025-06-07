@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Clock, Truck, CreditCard } from 'lucide-react';
+import { ShoppingBag, Clock, Truck, CreditCard, Apple } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { getFeaturedProducts, categories } from '../data/products';
 import Cookie from '../components/Cookie';
@@ -95,7 +95,7 @@ const Home: React.FC = () => {
             Browse By Category
           </h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
             {categories.map((category) => (
               <Link
                 key={category.id}
@@ -106,6 +106,7 @@ const Home: React.FC = () => {
                   {/* Use the category icons defined in CategoryFilter component */}
                   <span className="text-orange-600">
                     {category.icon === 'shopping-basket' && <ShoppingBag size={24} />}
+                    {category.icon === 'apple' && <Apple size={24} />}
                     {category.icon === 'cookie' && <Cookie size={24} />}
                     {category.icon === 'coffee' && <Coffee size={24} />}
                     {category.icon === 'spray-can' && <SprayCan size={24} />}

@@ -30,7 +30,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) 
           <img 
             src={product.image} 
             alt={product.name} 
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="product-card-image transition-transform duration-300 group-hover:scale-105"
+            style={{ 
+              objectFit: 'cover',
+              objectPosition: 'center',
+              width: '100%',
+              height: '100%'
+            }}
           />
           {featured && (
             <span className="absolute top-2 right-2 badge bg-blue-500 text-white">

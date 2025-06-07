@@ -24,7 +24,6 @@ import cottonBuds from '../assets/products/cottonbuds.avif';
 import vaseline from '../assets/products/vaseline.jpeg';
 import ballpoint from '../assets/products/ballpoint.png';
 
-
 import washingPowder from '../assets/products/washingpowder.avif';
 import mop from '../assets/products/mop.jpeg';
 import antiseptic from '../assets/products/antiseptic.jpeg';
@@ -37,6 +36,7 @@ import { Product, Category } from '../types';
 
 export const categories: Category[] = [
   { id: 'groceries', name: 'Groceries', icon: 'shopping-basket' },
+  { id: 'fruits', name: 'Fruits', icon: 'apple' },
   { id: 'snacks', name: 'Snacks', icon: 'cookie' },
   { id: 'beverages', name: 'Beverages', icon: 'coffee' },
   { id: 'toiletries', name: 'Toiletries', icon: 'spray-can' },
@@ -99,6 +99,55 @@ export const products: Product[] = [
     category: 'groceries',
     description: 'Fresh garlic bulbs for cooking.',
     stock: 50,
+  },
+
+  // Fruits
+  {
+    id: 'bananas',
+    name: 'Bananas',
+    price: 10,
+    image: 'https://images.pexels.com/photos/2872755/pexels-photo-2872755.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'fruits',
+    description: 'Fresh, ripe bananas perfect for snacking or smoothies.',
+    stock: 100,
+    featured: true,
+  },
+  {
+    id: 'watermelon',
+    name: 'Watermelon Slice',
+    price: 20,
+    image: 'https://images.pexels.com/photos/1313267/pexels-photo-1313267.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'fruits',
+    description: 'Juicy watermelon slice, perfect for hot days.',
+    stock: 50,
+  },
+  {
+    id: 'avocado',
+    name: 'Avocado',
+    price: 50,
+    image: 'https://images.pexels.com/photos/557659/pexels-photo-557659.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'fruits',
+    description: 'Fresh, creamy avocados rich in healthy fats.',
+    stock: 30,
+    featured: true,
+  },
+  {
+    id: 'pineapple',
+    name: 'Pineapple Slice',
+    price: 20,
+    image: 'https://images.pexels.com/photos/947879/pexels-photo-947879.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'fruits',
+    description: 'Sweet and tangy pineapple slice.',
+    stock: 40,
+  },
+  {
+    id: 'lemon',
+    name: 'Lemon',
+    price: 20,
+    image: 'https://images.pexels.com/photos/1414110/pexels-photo-1414110.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'fruits',
+    description: 'Fresh lemons for cooking, drinks, and garnishing.',
+    stock: 60,
   },
 
   // Snacks
@@ -167,7 +216,6 @@ export const products: Product[] = [
     description: 'Creamy, delicious ice cream.',
     stock: 30,
   },
- 
   {
     id: 'noodles',
     name: 'Instant Noodles',
@@ -177,6 +225,25 @@ export const products: Product[] = [
     description: 'Quick and easy instant noodles.',
     stock: 100,
     featured: true,
+  },
+  {
+    id: 'pilau-beef',
+    name: 'Pilau Beef',
+    price: 320,
+    image: 'https://images.pexels.com/photos/8477552/pexels-photo-8477552.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'snacks',
+    description: 'Delicious pilau rice with tender beef pieces.',
+    stock: 20,
+    featured: true,
+  },
+  {
+    id: 'bhajia',
+    name: 'Bhajia',
+    price: 150,
+    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'snacks',
+    description: 'Crispy, spiced potato fritters.',
+    stock: 30,
   },
 
   // Beverages
@@ -199,7 +266,6 @@ export const products: Product[] = [
     description: 'Refreshing Minute Maid juice.',
     stock: 50,
   },
- 
   {
     id: 'fresh-juice',
     name: 'Fresh Juice',
@@ -239,7 +305,6 @@ export const products: Product[] = [
     description: 'Laundry bar soap.',
     stock: 50,
   },
- 
   {
     id: 'toothpaste',
     name: 'Toothpaste',
@@ -277,8 +342,6 @@ export const products: Product[] = [
     stock: 50,
   },
 
-
-
   // Stationery
   {
     id: 'ballpoint',
@@ -289,10 +352,6 @@ export const products: Product[] = [
     description: 'Smooth writing ballpoint pen.',
     stock: 100,
   },
- 
- 
-
-
 
   // Cleaning
   {

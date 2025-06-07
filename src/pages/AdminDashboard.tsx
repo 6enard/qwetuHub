@@ -3,7 +3,9 @@ import { collection, query, onSnapshot, orderBy, where, Timestamp } from 'fireba
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Clock } from 'lucide-react';
+import { AlertTriangle, Clock, Bell } from 'lucide-react';
+import { useNotifications } from '../hooks/useNotifications';
+import NotificationBanner from '../components/NotificationBanner';
 
 interface Order {
   id: string;
@@ -40,6 +42,9 @@ const AdminDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
+  
+  // Initialize notifications
+  const { hasPermission } = useNotifications();
 
   useEffect(() => {
     if (!isAdmin) {
@@ -118,8 +123,19 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center gap-2 mt-2">
+            <Bell size={16} className={hasPermission ? 'text-green-500' : 'text-gray-400'} />
+            <span className={`text-sm ${hasPermission ? 'text-green-600' : 'text-gray-500'}`}>
+              {hasPermission ? 'Notifications enabled' : 'Notifications disabled'}
+            </span>
+          </div>
+        </div>
       </div>
+
+      {/* Notification Banner */}
+      <NotificationBanner />
 
       {/* Time Filters */}
       <div className="flex flex-wrap gap-2 mb-6">

@@ -7,14 +7,14 @@ import garlic from '../assets/products/garlic.jpg';
 import samosa from '../assets/products/samosa.jpg';
 import smokie from '../assets/products/smokie.jpg';
 import egg from '../assets/products/egg.jpg';
-import smocha from '../assets/products/smocha.jpeg';
+import smocha from '../assets/products/smocha.png';
 import fries from '../assets/products/fries.jpg';
 import crisps from '../assets/products/crisps.jpg';
 import iceCream from '../assets/products/icecream.avif';
 import noodles from '../assets/products/noodles.jpeg';
 import water from '../assets/products/water.jpeg';
 import minuteMaid from '../assets/products/minutemaid.jpg';
-import freshJuice from '../assets/products/freshjuice.jpg';
+import freshJuice from '../assets/products/juice.png';
 import tissues from '../assets/products/tissue.avif';
 import serviettes from '../assets/products/serviettes.jpg';
 import barSoap from '../assets/products/barsoap.jpg';
@@ -210,7 +210,7 @@ export const products: Product[] = [
     id: 'smocha',
     name: 'Smocha',
     price: 60,
-    image: "https://sdmntpritalynorth.oaiusercontent.com/files/00000000-377c-6246-bbe4-9fcb0a7c3ed1/raw?se=2025-06-07T21%3A35%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=32f2ee6b-abc0-5a84-9174-73744909ccf1&skoid=82a3371f-2f6c-4f81-8a78-2701b362559b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-07T20%3A09%3A07Z&ske=2025-06-08T20%3A09%3A07Z&sks=b&skv=2024-08-04&sig=7wO%2BXesCqVu434XJEID6OD4uVjwfJ6dxf4hfZMGNyII%3D",
+    image: smocha,
     category: 'snacks',
     description: 'Smokie and chapati combo.',
     stock: 50,
@@ -297,9 +297,9 @@ export const products: Product[] = [
     id: 'fresh-juice',
     name: 'Fresh Juice',
     price: 100,
-    image: "https://sdmntpritalynorth.oaiusercontent.com/files/00000000-bb70-6246-8946-fd3b12a78714/raw?se=2025-06-07T21%3A41%3A57Z&sp=r&sv=2024-08-04&sr=b&scid=f8e83abd-965c-5f17-9779-62df0da7595c&skoid=82a3371f-2f6c-4f81-8a78-2701b362559b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-07T06%3A44%3A08Z&ske=2025-06-08T06%3A44%3A08Z&sks=b&skv=2024-08-04&sig=OZCnqYwUoyobg6A13WDR5yxvqLtCPw2HwJYuAkcrI7M%3D",
+    image: freshJuice,
     category: 'beverages',
-    description: 'Freshly squeezed fruit juice.',
+    description: 'Freshly squeezed fruit juice. (mango,passion,beetroot,pineapple,watermelon)',
     stock: 30,
     featured: true,
   },

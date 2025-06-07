@@ -100,6 +100,33 @@ export const products: Product[] = [
     description: 'Fresh garlic bulbs for cooking.',
     stock: 50,
   },
+  {
+    id: 'spinach',
+    name: 'Fresh Spinach',
+    price: 30,
+    image: 'https://images.pexels.com/photos/2255935/pexels-photo-2255935.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'groceries',
+    description: 'Fresh spinach leaves, rich in iron and vitamins.',
+    stock: 40,
+  },
+  {
+    id: 'cabbage',
+    name: 'Cabbage',
+    price: 30,
+    image: 'https://images.pexels.com/photos/1656663/pexels-photo-1656663.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'groceries',
+    description: 'Fresh cabbage head, perfect for salads and cooking.',
+    stock: 30,
+  },
+  {
+    id: 'sukuma-wiki',
+    name: 'Sukuma Wiki',
+    price: 20,
+    image: 'https://images.pexels.com/photos/1656666/pexels-photo-1656666.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'groceries',
+    description: 'Fresh sukuma wiki (collard greens), a Kenyan staple vegetable.',
+    stock: 50,
+  },
 
   // Fruits
   {

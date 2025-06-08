@@ -14,23 +14,43 @@ const Home: React.FC = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-700 to-orange-500 text-white py-16" >
-        <div className="container mx-auto px-4" >
-          <div className="max-w-3xl mx-auto text-center" >
+      <section className="bg-gradient-to-r from-blue-700 to-orange-500 text-white py-16 overflow-hidden relative">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up">
               Everyday Supplies Delivered to Your Door
             </h1>
-            <p className="text-xl mb-8 opacity-90 animate-slide-up">
-              Get all your essentials delivered directly to your hostel room.
-            </p>
+            
+            {/* Creative animated text */}
+            <div className="text-xl mb-8 opacity-90 animate-slide-up">
+              <p className="mb-2">Get all your essentials delivered</p>
+              <div className="relative inline-block">
+                <span className="text-2xl font-semibold bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur-sm">
+                  directly to your hostel room
+                </span>
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full animate-ping"></div>
+                <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+              <p className="mt-4 text-lg">
+                <span className="inline-block animate-bounce">📦</span> 
+                <span className="mx-2">No more trips to the store</span>
+                <span className="inline-block animate-bounce delay-100">🚀</span>
+              </p>
+            </div>
+            
             <Link
               to="/products"
-              className="btn bg-white text-blue-700 hover:text-orange-600 hover:bg-fuchsia-200 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl"
+              className="btn bg-white text-blue-700 hover:text-orange-600 hover:bg-fuchsia-200 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl transform hover:scale-105"
             >
               Shop Now
             </Link>
           </div>
         </div>
+        
+        {/* Floating elements */}
+        <div className="absolute top-20 left-10 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-12 h-12 bg-yellow-400 bg-opacity-20 rounded-full animate-float delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-green-400 bg-opacity-15 rounded-full animate-float delay-500"></div>
       </section>
 
       {/* Features Section */}

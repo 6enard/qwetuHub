@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Phone } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -45,10 +45,15 @@ const Footer: React.FC = () => {
           {/* Contact */}
           <div>
             <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-            <ul className="space-y-2 text-gray-300">
-              <li>Phone: +254 740 087 715</li>
-              
-            </ul>
+            <div className="flex items-center space-x-2">
+              <a 
+                href="tel:+254740087715" 
+                className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
+              >
+                <Phone size={18} />
+                <span>Call Us</span>
+              </a>
+            </div>
           </div>
         </div>
 

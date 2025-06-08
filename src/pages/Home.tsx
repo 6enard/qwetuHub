@@ -21,7 +21,7 @@ const Home: React.FC = () => {
               Everyday Supplies Delivered to Your Door
             </h1>
             <p className="text-xl mb-8 opacity-90 animate-slide-up">
-              Get all your essentials delivered directly to your hostel room in minutes.
+              Get all your essentials delivered directly to your hostel room.
             </p>
             <Link
               to="/products"

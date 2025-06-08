@@ -217,6 +217,16 @@ export const products: Product[] = [
 
   // Snacks
   {
+    id: 'Bread',
+    name: 'Bread',
+    price: 70,
+    image: "https://cdn.mafrservices.com/pim-content/KEN/media/product/4/1743067803/4_main.jpg",
+    category: 'snacks',
+    description: 'freshly baked bread.',
+    stock: 50,
+    featured: true,
+  },
+  {
     id: 'samosa',
     name: 'Samosa',
     price: 50,
@@ -545,7 +555,7 @@ export const products: Product[] = [
     id: 'tomato-paste',
     name: 'Kenylon Tomato Paste 30g',
     price: 30,
-    image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=500',
+    image: 'https://cdn.mafrservices.com/pim-content/KEN/media/product/235949/1748242804/235949_main.jpg?im=Resize=480',
     category: 'spices',
     description: 'Concentrated tomato paste for rich flavor.',
     stock: 80,

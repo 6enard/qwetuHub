@@ -108,7 +108,7 @@ const FAQ: React.FC = () => {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <strong className="block mb-2">Delivery Information:</strong>
                   <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Average delivery time: 30-45 minutes</li>
+                    
                     <li>Real-time tracking through your order confirmation page</li>
                     <li>Delivery notifications via email and WhatsApp</li>
                     <li>Direct delivery to your room</li>

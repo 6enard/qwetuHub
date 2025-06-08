@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter, Phone } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Phone, MessageCircle } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -14,13 +14,13 @@ const Footer: React.FC = () => {
               Making life easier for hostel students with convenient delivery of essential supplies.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Twitter size={20} />
               </a>
             </div>
@@ -31,13 +31,16 @@ const Footer: React.FC = () => {
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-white">Home</Link>
+                <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/products" className="text-gray-300 hover:text-white">Products</Link>
+                <Link to="/products" className="text-gray-300 hover:text-white transition-colors">Products</Link>
               </li>
               <li>
-                <Link to="/cart" className="text-gray-300 hover:text-white">Cart</Link>
+                <Link to="/cart" className="text-gray-300 hover:text-white transition-colors">Cart</Link>
+              </li>
+              <li>
+                <Link to="/faq" className="text-gray-300 hover:text-white transition-colors">How It Works</Link>
               </li>
             </ul>
           </div>
@@ -45,13 +48,22 @@ const Footer: React.FC = () => {
           {/* Contact */}
           <div>
             <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-            <div className="flex items-center space-x-2">
+            <div className="space-y-3">
               <a 
                 href="tel:+254740087715" 
                 className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
               >
                 <Phone size={18} />
-                
+                <span>0740 087 715</span>
+              </a>
+              <a 
+                href="https://wa.me/254740087715" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-gray-300 hover:text-green-400 transition-colors"
+              >
+                <MessageCircle size={18} />
+                <span>WhatsApp</span>
               </a>
             </div>
           </div>

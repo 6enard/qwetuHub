@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Clock, Truck, CreditCard, Apple } from 'lucide-react';
+import { ShoppingBag, Clock, Truck, CreditCard, Apple, ChefHat } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { getFeaturedProducts, categories } from '../data/products';
 import Cookie from '../components/Cookie';
@@ -95,7 +95,7 @@ const Home: React.FC = () => {
             Browse By Category
           </h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
             {categories.map((category) => (
               <Link
                 key={category.id}
@@ -111,9 +111,10 @@ const Home: React.FC = () => {
                     {category.icon === 'coffee' && <Coffee size={24} />}
                     {category.icon === 'spray-can' && <SprayCan size={24} />}
                     {category.icon === 'pencil' && <Pencil size={24} />}
+                    {category.icon === 'chef-hat' && <ChefHat size={24} />}
                   </span>
                 </div>
-                <h3 className="font-medium text-gray-900">{category.name}</h3>
+                <h3 className="font-medium text-gray-900 text-sm">{category.name}</h3>
               </Link>
             ))}
           </div>

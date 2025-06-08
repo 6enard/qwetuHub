@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
                 className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
               >
                 <Phone size={18} />
-                <span>Call Us</span>
+                
               </a>
             </div>
           </div>

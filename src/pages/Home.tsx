@@ -13,10 +13,17 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-700 to-orange-500 text-white py-16" >
-        <div className="container mx-auto px-4" >
-          <div className="max-w-3xl mx-auto text-center" >
+      {/* Hero Section with Animated Gradient */}
+      <section className="relative py-16 overflow-hidden">
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-600 to-orange-500 animate-gradient-x"></div>
+        
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up">
               Everyday Supplies Delivered to Your Door
             </h1>
@@ -25,12 +32,19 @@ const Home: React.FC = () => {
             </p>
             <Link
               to="/products"
-              className="btn bg-white text-blue-700 hover:text-orange-600 hover:bg-fuchsia-200 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl"
+              className="inline-flex items-center btn bg-white text-blue-700 hover:text-orange-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl transform hover:scale-105"
             >
+              <ShoppingBag className="mr-2" size={20} />
               Shop Now
             </Link>
           </div>
         </div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-float"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 left-20 w-24 h-24 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-40 right-10 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '3s' }}></div>
       </section>
 
       {/* Animated Shopping Process */}

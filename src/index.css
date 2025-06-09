@@ -81,6 +81,34 @@
   50% { transform: translateY(-20px); }
 }
 
+/* Animated Gradient Background */
+@keyframes gradientX {
+  0%, 100% {
+    background: linear-gradient(45deg, #1e40af, #7c3aed, #ea580c);
+    background-size: 400% 400%;
+    background-position: 0% 50%;
+  }
+  25% {
+    background: linear-gradient(45deg, #7c3aed, #ea580c, #1e40af);
+    background-size: 400% 400%;
+    background-position: 50% 50%;
+  }
+  50% {
+    background: linear-gradient(45deg, #ea580c, #1e40af, #7c3aed);
+    background-size: 400% 400%;
+    background-position: 100% 50%;
+  }
+  75% {
+    background: linear-gradient(45deg, #1e40af, #ea580c, #7c3aed);
+    background-size: 400% 400%;
+    background-position: 50% 50%;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradientX 8s ease infinite;
+}
+
 @keyframes progressLine {
   0% { width: 0%; }
   100% { width: 100%; }

@@ -81,6 +81,38 @@
   50% { transform: translateY(-20px); }
 }
 
+@keyframes progressLine {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes slideInLeft {
+  0% { transform: translateX(-100px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  0% { transform: translateX(100px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -91,4 +123,79 @@
 
 .animate-slide-up {
   animation: slideUp 0.6s ease-out 0.2s both;
+}
+
+.animate-progress-line {
+  animation: progressLine 3s ease-in-out infinite;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.8s ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+}
+
+/* Staggered animation delays for shopping process steps */
+.animate-stagger-1 {
+  animation-delay: 0.2s;
+}
+
+.animate-stagger-2 {
+  animation-delay: 0.4s;
+}
+
+.animate-stagger-3 {
+  animation-delay: 0.6s;
+}
+
+.animate-stagger-4 {
+  animation-delay: 0.8s;
+}
+
+/* Hover effects for interactive elements */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Pulse effect for important elements */
+.pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6);
+  }
 }

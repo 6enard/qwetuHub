@@ -189,7 +189,7 @@ export const products: Product[] = [
   {
     id: 'avocado',
     name: 'Avocados',
-    price: 50,
+    price: 40,
     image: 'https://images.pexels.com/photos/557659/pexels-photo-557659.jpeg?auto=compress&cs=tinysrgb&w=500',
     category: 'fruits',
     description: 'Fresh, creamy avocados rich in healthy fats.',
@@ -284,8 +284,8 @@ export const products: Product[] = [
   },
   {
     id: 'ice-cream',
-    name: 'Ice Cream',
-    price: 100,
+    name: 'Dairyland Ice-cream',
+    price: 275,
     image: iceCream,
     category: 'snacks',
     description: 'Creamy, delicious ice cream.',

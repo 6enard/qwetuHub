@@ -16,7 +16,7 @@ const Home: React.FC = () => {
       {/* Hero Section with Animated Gradient */}
       <section className="relative py-16 overflow-hidden">
         {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-600 to-orange-500 animate-gradient-x"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-orange-600 "></div>
         
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black bg-opacity-10"></div>
@@ -180,7 +180,59 @@ const Home: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 ">
+            Why Choose Qhub?
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Feature 1 */}
+            <div className="text-center p-6 rounded-xl hover:shadow-md transition-shadow">
+              <div className="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShoppingBag size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Wide Selection</h3>
+              <p className="text-gray-600">
+                From snacks to toiletries, we've got all your hostel needs covered.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="text-center p-6 rounded-xl hover:shadow-md transition-shadow">
+              <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Quick Delivery</h3>
+              <p className="text-gray-600">
+                Get your items delivered to your room in minutes, not hours.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="text-center p-6 rounded-xl hover:shadow-md transition-shadow">
+              <div className="bg-orange-100 text-orange-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Easy Payment</h3>
+              <p className="text-gray-600">
+                Pay with Safaricom M-Pesa for secure and convenient transactions.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="text-center p-6 rounded-xl hover:shadow-md transition-shadow">
+              <div className="bg-purple-100 text-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Truck size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Room Delivery</h3>
+              <p className="text-gray-600">
+                No need to leave your room - we'll bring everything right to your door.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* Categories Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">

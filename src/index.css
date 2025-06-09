@@ -81,123 +81,32 @@
   50% { transform: translateY(-20px); }
 }
 
-/* Smooth Animated Gradient Background */
-@keyframes gradientFlow {
-  0% {
+/* Animated Gradient Background */
+@keyframes gradientX {
+  0%, 100% {
+    background: linear-gradient(45deg, #1e40af, #7c3aed, #ea580c);
+    background-size: 400% 400%;
     background-position: 0% 50%;
   }
   25% {
-    background-position: 100% 50%;
+    background: linear-gradient(45deg, #7c3aed, #ea580c, #1e40af);
+    background-size: 400% 400%;
+    background-position: 50% 50%;
   }
   50% {
-    background-position: 100% 100%;
+    background: linear-gradient(45deg, #ea580c, #1e40af, #7c3aed);
+    background-size: 400% 400%;
+    background-position: 100% 50%;
   }
   75% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-gradient-flow {
-  background: linear-gradient(
-    45deg,
-    #1e40af,
-    #3b82f6,
-    #7c3aed,
-    #a855f7,
-    #ea580c,
-    #f97316,
-    #1e40af
-  );
-  background-size: 400% 400%;
-  animation: gradientFlow 12s ease-in-out infinite;
-}
-
-/* Alternative smoother gradient animation */
-@keyframes gradientShift {
-  0%, 100% {
-    background: linear-gradient(45deg, #1e40af, #7c3aed, #ea580c);
-  }
-  33% {
-    background: linear-gradient(45deg, #7c3aed, #ea580c, #1e40af);
-  }
-  66% {
-    background: linear-gradient(45deg, #ea580c, #1e40af, #7c3aed);
+    background: linear-gradient(45deg, #1e40af, #ea580c, #7c3aed);
+    background-size: 400% 400%;
+    background-position: 50% 50%;
   }
 }
 
-.animate-gradient-shift {
-  animation: gradientShift 8s ease-in-out infinite;
-}
-
-/* Ultra smooth gradient with multiple color stops */
-@keyframes gradientWave {
-  0% {
-    background: linear-gradient(
-      45deg,
-      #1e40af 0%,
-      #3b82f6 25%,
-      #7c3aed 50%,
-      #a855f7 75%,
-      #ea580c 100%
-    );
-  }
-  20% {
-    background: linear-gradient(
-      45deg,
-      #3b82f6 0%,
-      #7c3aed 25%,
-      #a855f7 50%,
-      #ea580c 75%,
-      #f97316 100%
-    );
-  }
-  40% {
-    background: linear-gradient(
-      45deg,
-      #7c3aed 0%,
-      #a855f7 25%,
-      #ea580c 50%,
-      #f97316 75%,
-      #1e40af 100%
-    );
-  }
-  60% {
-    background: linear-gradient(
-      45deg,
-      #a855f7 0%,
-      #ea580c 25%,
-      #f97316 50%,
-      #1e40af 75%,
-      #3b82f6 100%
-    );
-  }
-  80% {
-    background: linear-gradient(
-      45deg,
-      #ea580c 0%,
-      #f97316 25%,
-      #1e40af 50%,
-      #3b82f6 75%,
-      #7c3aed 100%
-    );
-  }
-  100% {
-    background: linear-gradient(
-      45deg,
-      #1e40af 0%,
-      #3b82f6 25%,
-      #7c3aed 50%,
-      #a855f7 75%,
-      #ea580c 100%
-    );
-  }
-}
-
-.animate-gradient-wave {
-  animation: gradientWave 10s ease-in-out infinite;
+.animate-gradient-x {
+  animation: gradientX 8s ease infinite;
 }
 
 @keyframes progressLine {

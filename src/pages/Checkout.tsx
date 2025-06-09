@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, User, Home, Mail, MessageSquare } from 'lucide-react';
+import { Phone, User, Home, MessageSquare } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -16,7 +16,6 @@ const Checkout: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    email: '',
     roomNumber: '',
     hostel: 'Qwetu Ruaraka',
     additionalNotes: ''
@@ -33,43 +32,6 @@ const Checkout: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError(null);
-  };
-
-  const sendOrderNotification = async (orderId: string) => {
-    if (!formData.email) return; // Skip email notification if no email provided
-    
-    try {
-      const templateParams = {
-        order_id: orderId,
-        order_date: new Date().toLocaleDateString(),
-        order_time: new Date().toLocaleTimeString(),
-        customer_name: formData.name,
-        customer_phone: formData.phone,
-        customer_email: formData.email,
-        customer_hostel: formData.hostel,
-        customer_room: formData.roomNumber,
-        additional_notes: formData.additionalNotes || 'No additional notes',
-        items: items.map(item => ({
-          item_name: item.product.name,
-          quantity: item.quantity,
-          unit_price: item.product.price,
-          total_price: item.product.price * item.quantity
-        })),
-        subtotal: totalPrice,
-        delivery_fee: deliveryFee,
-        total_amount: totalPrice + deliveryFee,
-        tracking_url: `${window.location.origin}/confirmation/${orderId}`
-      };
-
-      await emailjs.send(
-        'service_8h3ixun',
-        'template_5wm5fq7',
-        templateParams,
-        'odeWgS5PvV3YKOWsU'
-      );
-    } catch (error) {
-      console.error('Error sending email notification:', error);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,7 +59,7 @@ const Checkout: React.FC = () => {
         customerInfo: {
           name: formData.name,
           phone: formData.phone,
-          email: formData.email || null,
+          email: user?.email || null,
           roomNumber: formData.roomNumber,
           hostel: formData.hostel,
           additionalNotes: formData.additionalNotes
@@ -114,11 +76,6 @@ const Checkout: React.FC = () => {
         subtotal: totalPrice,
         createdAt: new Date().toISOString()
       });
-
-      // Send email notification if email provided
-      if (formData.email) {
-        await sendOrderNotification(orderRef.id);
-      }
 
       await clearCart();
       navigate(`/confirmation/${orderRef.id}`);
@@ -163,27 +120,6 @@ const Checkout: React.FC = () => {
                     placeholder="Your full name"
                     className="input pl-10"
                     required
-                    disabled={isProcessing}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                  Email Address (Optional)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail size={18} className="text-gray-400" />
-                  </div>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className="input pl-10"
                     disabled={isProcessing}
                   />
                 </div>

@@ -42,40 +42,43 @@ exports.sendOrderNotification = functions.firestore
       `
     };
 
-    // Email to customer
-    const customerMailOptions = {
-      from: '6enard@gmail.com',
-      to: order.customerInfo.email,
-      subject: `Order Confirmation #${orderId} - Qhub`,
-      html: `
-        <h2>Thank you for your order!</h2>
-        <p>Your order has been received and is being processed.</p>
-        <p><strong>Order ID:</strong> ${orderId}</p>
-        <h3>Order Details:</h3>
-        <ul>
-          ${order.items.map(item => `
-            <li>${item.name} x${item.quantity} - KES ${item.subtotal}</li>
-          `).join('')}
-        </ul>
-        <p><strong>Total Amount:</strong> KES ${order.totalAmount}</p>
-        <p><strong>Delivery to:</strong><br>
-        Room ${order.customerInfo.roomNumber}<br>
-        ${order.customerInfo.hostel}</p>
-        <p>Payment Instructions:</p>
-        <ol>
-          <li>Send KES ${order.totalAmount} to M-Pesa number: 0740087715</li>
-          <li>Send the M-Pesa confirmation message to WhatsApp: 0740087715</li>
-        </ol>
-        <p>We'll notify you when your order is confirmed and out for delivery.</p>
-      `
-    };
+    // Email to customer (only if email is available)
+    let customerMailOptions = null;
+    if (order.customerInfo.email) {
+      customerMailOptions = {
+        from: '6enard@gmail.com',
+        to: order.customerInfo.email,
+        subject: `Order Confirmation #${orderId} - Qhub`,
+        html: `
+          <h2>Thank you for your order!</h2>
+          <p>Your order has been received and is being processed.</p>
+          <p><strong>Order ID:</strong> ${orderId}</p>
+          <h3>Order Details:</h3>
+          <ul>
+            ${order.items.map(item => `
+              <li>${item.name} x${item.quantity} - KES ${item.subtotal}</li>
+            `).join('')}
+          </ul>
+          <p><strong>Total Amount:</strong> KES ${order.totalAmount}</p>
+          <p><strong>Delivery to:</strong><br>
+          Room ${order.customerInfo.roomNumber}<br>
+          ${order.customerInfo.hostel}</p>
+          <p>Payment Instructions:</p>
+          <ol>
+            <li>Send KES ${order.totalAmount} to M-Pesa number: 0740087715</li>
+            <li>Send the M-Pesa confirmation message to WhatsApp: 0740087715</li>
+          </ol>
+          <p>We'll notify you when your order is confirmed and out for delivery.</p>
+        `
+      };
+    }
 
     try {
       // Always send admin notification
       await transporter.sendMail(adminMailOptions);
       
-      // Send customer email if available
-      if (order.customerInfo.email) {
+      // Send customer email only if available
+      if (customerMailOptions) {
         await transporter.sendMail(customerMailOptions);
       }
       

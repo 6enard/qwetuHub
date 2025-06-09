@@ -40,7 +40,7 @@ const OrderConfirmation: React.FC = () => {
     if (!orderData) return;
 
     const receipt = `
-*QWETUHub Order Receipt*
+*Qhub Order Receipt*
 Order #${orderId}
 Date: ${new Date(orderData.createdAt).toLocaleDateString()}
 Time: ${new Date(orderData.createdAt).toLocaleTimeString()}
@@ -60,7 +60,7 @@ ${orderData.items.map(item => `• ${item.name} x${item.quantity} = KES ${item.s
 1. Send KES ${orderData.totalAmount} to M-Pesa number: 0740087715
 2. Send this receipt via whatsapp and track your order
 
-Thank you for shopping with QWETUHub!`;
+Thank you for shopping with Qhub!`;
 
     const url = `https://wa.me/254740087715?text=${encodeURIComponent(receipt)}`;
     window.open(url, '_blank');
@@ -70,7 +70,7 @@ Thank you for shopping with QWETUHub!`;
     if (!orderData) return;
 
     const receipt = `
-QWETUHub Receipt
+Qhub Receipt
 -----------------
 Order #${orderId}
 Date: ${new Date(orderData.createdAt).toLocaleDateString()}
@@ -99,13 +99,13 @@ Payment Instructions:
 
 Order Status: ${orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}
 
-Thank you for shopping with QWETUHub!`;
+Thank you for shopping with Qhub!`;
 
     const blob = new Blob([receipt], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `QWETUHub-Receipt-${orderId}.txt`;
+    a.download = `Qhub-Receipt-${orderId}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

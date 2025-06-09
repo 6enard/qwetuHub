@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 admin.initializeApp();
 
 // Configure nodemailer with Gmail
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: 'gmail',
   auth: {
     user: '6enard@gmail.com',
@@ -23,7 +23,7 @@ exports.sendOrderNotification = functions.firestore
     const adminMailOptions = {
       from: '6enard@gmail.com',
       to: '6enard@gmail.com',
-      subject: `New Order #${orderId} - QWETUHub`,
+      subject: `New Order #${orderId} - Qhub`,
       html: `
         <h2>New Order Received</h2>
         <p><strong>Order ID:</strong> ${orderId}</p>
@@ -46,7 +46,7 @@ exports.sendOrderNotification = functions.firestore
     const customerMailOptions = {
       from: '6enard@gmail.com',
       to: order.customerInfo.email,
-      subject: `Order Confirmation #${orderId} - QWETUHub`,
+      subject: `Order Confirmation #${orderId} - Qhub`,
       html: `
         <h2>Thank you for your order!</h2>
         <p>Your order has been received and is being processed.</p>
@@ -101,7 +101,7 @@ exports.sendOrderStatusUpdate = functions.firestore
       const mailOptions = {
         from: '6enard@gmail.com',
         to: newData.customerInfo.email,
-        subject: `Order Status Update #${context.params.orderId} - QWETUHub`,
+        subject: `Order Status Update #${context.params.orderId} - Qhub`,
         html: `
           <h2>Order Status Update</h2>
           <p>${statusMessages[newData.trackingStatus] || 'Your order status has been updated'}</p>

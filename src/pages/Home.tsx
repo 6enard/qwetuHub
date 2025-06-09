@@ -13,26 +13,26 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      {/* Hero Section with Animated Gradient */}
+      {/* Hero Section with Smooth Animated Gradient */}
       <section className="relative py-16 overflow-hidden">
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-600 to-orange-500 animate-gradient-x"></div>
+        {/* Smooth Animated Gradient Background */}
+        <div className="absolute inset-0 animate-gradient-wave"></div>
         
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+        {/* Subtle overlay for better text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-5"></div>
         
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in-up drop-shadow-lg">
               Everyday Supplies Delivered to Your Door
             </h1>
-            <p className="text-xl mb-8 opacity-90 animate-slide-up">
+            <p className="text-xl mb-8 opacity-95 animate-slide-up drop-shadow-md">
               Get all your essentials delivered directly to your hostel room.
             </p>
             <Link
               to="/products"
-              className="inline-flex items-center btn bg-white text-blue-700 hover:text-orange-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center btn bg-white text-blue-700 hover:text-orange-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl transform hover:scale-105 drop-shadow-md"
             >
               <ShoppingBag className="mr-2" size={20} />
               Shop Now
@@ -40,11 +40,15 @@ const Home: React.FC = () => {
           </div>
         </div>
         
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-float"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-20 left-20 w-24 h-24 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-40 right-10 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '3s' }}></div>
+        {/* Floating Elements with improved positioning */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-15 rounded-full animate-float backdrop-blur-sm"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-15 rounded-full animate-float backdrop-blur-sm" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 left-20 w-24 h-24 bg-white bg-opacity-15 rounded-full animate-float backdrop-blur-sm" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-40 right-10 w-12 h-12 bg-white bg-opacity-15 rounded-full animate-float backdrop-blur-sm" style={{ animationDelay: '3s' }}></div>
+        
+        {/* Additional decorative elements */}
+        <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-1/3 right-1/3 w-14 h-14 bg-white bg-opacity-10 rounded-full animate-float" style={{ animationDelay: '5s' }}></div>
       </section>
 
       {/* Animated Shopping Process */}

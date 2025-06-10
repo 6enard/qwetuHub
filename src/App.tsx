@@ -80,7 +80,7 @@ function App() {
             path="my-orders" 
             element={
               !user ? (
-                <Navigate to="/login" replace />
+                <Navigate to="/login\" replace />
               ) : (
                 <Suspense fallback={<LoadingSpinner />}>
                   <MyOrders />
@@ -92,7 +92,7 @@ function App() {
             path="admin" 
             element={
               !user ? (
-                <Navigate to="/login" replace />
+                <Navigate to="/login\" replace />
               ) : isAdmin ? (
                 <Suspense fallback={<LoadingSpinner />}>
                   <AdminDashboard />
@@ -106,7 +106,7 @@ function App() {
             path="admin/orders/:orderId"
             element={
               !user ? (
-                <Navigate to="/login" replace />
+                <Navigate to="/login\" replace />
               ) : isAdmin ? (
                 <Suspense fallback={<LoadingSpinner />}>
                   <OrderDetails />

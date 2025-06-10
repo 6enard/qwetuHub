@@ -48,7 +48,7 @@ const Home: React.FC = () => {
               className="inline-flex items-center btn bg-white text-blue-700 hover:text-orange-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all hover:shadow-xl transform hover:scale-105"
             >
               <ShoppingBag className="mr-2" size={20} />
-              Shop Now
+              Get all you need without leaving your room.
             </Link>
           </div>
         </div>

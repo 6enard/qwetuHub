@@ -52,7 +52,7 @@
   @apply w-full h-48 object-cover object-center rounded-t-lg;
 }
 
-/* Animation classes */
+/* Optimized animation classes with reduced complexity */
 .fade-in {
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -78,152 +78,74 @@
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Animated Gradient Background */
-@keyframes gradientX {
-  0%, 100% {
-    background: linear-gradient(45deg, #1e40af, #7c3aed, #ea580c);
-    background-size: 400% 400%;
-    background-position: 0% 50%;
+/* Simplified animations for better performance */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* Reduced animation complexity for mobile performance */
+@media (max-width: 768px) {
+  .animate-float {
+    animation: none; /* Disable floating animations on mobile */
   }
-  25% {
-    background: linear-gradient(45deg, #7c3aed, #ea580c, #1e40af);
-    background-size: 400% 400%;
-    background-position: 50% 50%;
-  }
-  50% {
-    background: linear-gradient(45deg, #ea580c, #1e40af, #7c3aed);
-    background-size: 400% 400%;
-    background-position: 100% 50%;
-  }
-  75% {
-    background: linear-gradient(45deg, #1e40af, #ea580c, #7c3aed);
-    background-size: 400% 400%;
-    background-position: 50% 50%;
+  
+  .animate-fade-in-up {
+    animation: fadeIn 0.3s ease-out; /* Simplified animation for mobile */
   }
 }
 
-.animate-gradient-x {
-  animation: gradientX 8s ease infinite;
+/* Optimized hover effects */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-@keyframes progressLine {
-  0% { width: 0%; }
-  100% { width: 100%; }
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes slideInLeft {
-  0% { transform: translateX(-100px); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes slideInRight {
-  0% { transform: translateX(100px); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-@keyframes scaleIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+/* Optimize image loading */
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
 }
 
-@keyframes bounceIn {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
+/* Skeleton loading animation */
 @keyframes shimmer {
   0% { background-position: -200px 0; }
   100% { background-position: calc(200px + 100%) 0; }
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.6s ease-out 0.2s both;
-}
-
-.animate-progress-line {
-  animation: progressLine 3s ease-in-out infinite;
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.8s ease-out;
-}
-
-.animate-slide-in-right {
-  animation: slideInRight 0.8s ease-out;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.6s ease-out;
-}
-
-.animate-bounce-in {
-  animation: bounceIn 0.8s ease-out;
-}
-
 .animate-shimmer {
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.5s infinite;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200px 100%;
-}
-
-/* Staggered animation delays for shopping process steps */
-.animate-stagger-1 {
-  animation-delay: 0.2s;
-}
-
-.animate-stagger-2 {
-  animation-delay: 0.4s;
-}
-
-.animate-stagger-3 {
-  animation-delay: 0.6s;
-}
-
-.animate-stagger-4 {
-  animation-delay: 0.8s;
-}
-
-/* Hover effects for interactive elements */
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Gradient text effect */
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Pulse effect for important elements */
-.pulse-glow {
-  animation: pulseGlow 2s infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6);
-  }
 }

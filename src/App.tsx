@@ -4,7 +4,7 @@ import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
-// Lazy load components
+// Lazy load components for better performance
 const Home = React.lazy(() => import('./pages/Home'));
 const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
@@ -18,10 +18,13 @@ const OrderDetails = React.lazy(() => import('./pages/OrderDetails'));
 const MyOrders = React.lazy(() => import('./pages/MyOrders'));
 const FAQ = React.lazy(() => import('./pages/FAQ'));
 
-// Loading component
+// Enhanced loading component with better UX
 const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600 font-medium">Loading...</p>
+    </div>
   </div>
 );
 
@@ -77,7 +80,7 @@ function App() {
             path="my-orders" 
             element={
               !user ? (
-                <Navigate to="/login\" replace />
+                <Navigate to="/login" replace />
               ) : (
                 <Suspense fallback={<LoadingSpinner />}>
                   <MyOrders />
@@ -89,7 +92,7 @@ function App() {
             path="admin" 
             element={
               !user ? (
-                <Navigate to="/login\" replace />
+                <Navigate to="/login" replace />
               ) : isAdmin ? (
                 <Suspense fallback={<LoadingSpinner />}>
                   <AdminDashboard />
@@ -103,7 +106,7 @@ function App() {
             path="admin/orders/:orderId"
             element={
               !user ? (
-                <Navigate to="/login\" replace />
+                <Navigate to="/login" replace />
               ) : isAdmin ? (
                 <Suspense fallback={<LoadingSpinner />}>
                   <OrderDetails />

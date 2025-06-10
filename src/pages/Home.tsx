@@ -26,7 +26,7 @@ const ProductCardSkeleton = () => (
 const Home: React.FC = () => {
   return (
     <div>
-      {/* Hero Section with Optimized Gradient */}
+      {/* Hero Section with Optimized Gradient  */}
       <section className="relative py-16 overflow-hidden">
         {/* Simplified gradient for better performance */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-purple-600 to-orange-500"></div>

@@ -7,9 +7,10 @@ import { useCart } from '../context/CartContext';
 interface ProductCardProps {
   product: Product;
   featured?: boolean;
+  compact?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false, compact = false }) => {
   const { addItem } = useCart();
   const navigate = useNavigate();
 
@@ -18,6 +19,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) 
     e.stopPropagation();
     addItem(product, 1);
   };
+
+  if (compact) {
+    return (
+      <div className="card group overflow-hidden">
+        <Link to={`/products/${product.id}`} className="block">
+          <div className="relative h-32 overflow-hidden">
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              className="product-card-image transition-transform duration-300 group-hover:scale-105"
+              style={{ 
+                objectFit: 'cover',
+                objectPosition: 'center',
+                width: '100%',
+                height: '100%'
+              }}
+            />
+            {featured && (
+              <span className="absolute top-1 right-1 badge bg-blue-500 text-white text-xs">
+                Featured
+              </span>
+            )}
+            {product.stock < 10 && (
+              <span className="absolute top-1 left-1 badge bg-red-500 text-white text-xs">
+                Low Stock
+              </span>
+            )}
+          </div>
+          <div className="p-2">
+            <h3 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2">{product.name}</h3>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-900 text-sm">KES {product.price}</span>
+              <button
+                onClick={handleAddToCart}
+                className="p-1.5 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-colors"
+              >
+                <Plus size={14} />
+              </button>
+            </div>
+          </div>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -75,4 +120,4 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, featured = false }) 
   );
 };
 
-export default ProductCard
+export default ProductCard;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBasket, Cookie, Coffee, SprayCan, Pencil, Apple, ChefHat } from 'lucide-react';
+import { ShoppingBasket, Cookie, Coffee, SprayCan, Pencil, Apple, ChefHat, Heart } from 'lucide-react';
 import { Category } from '../types';
 
 interface CategoryFilterProps {
@@ -30,6 +30,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         return <Pencil size={size} />;
       case 'chef-hat':
         return <ChefHat size={size} />;
+      case 'heart':
+        return <Heart size={size} />;
       default:
         return <ShoppingBasket size={size} />;
     }

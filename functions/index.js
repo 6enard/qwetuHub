@@ -23,7 +23,7 @@ exports.sendOrderNotification = functions.firestore
     const adminMailOptions = {
       from: '6enard@gmail.com',
       to: '6enard@gmail.com',
-      subject: `New Order #${orderId} - Qhub`,
+      subject: `New Order #${orderId} - QwetuHub`,
       html: `
         <h2>New Order Received</h2>
         <p><strong>Order ID:</strong> ${orderId}</p>
@@ -48,7 +48,7 @@ exports.sendOrderNotification = functions.firestore
       customerMailOptions = {
         from: '6enard@gmail.com',
         to: order.customerInfo.email,
-        subject: `Order Confirmation #${orderId} - Qhub`,
+        subject: `Order Confirmation #${orderId} - QwetuHub`,
         html: `
           <h2>Thank you for your order!</h2>
           <p>Your order has been received and is being processed.</p>
@@ -104,7 +104,7 @@ exports.sendOrderStatusUpdate = functions.firestore
       const mailOptions = {
         from: '6enard@gmail.com',
         to: newData.customerInfo.email,
-        subject: `Order Status Update #${context.params.orderId} - Qhub`,
+        subject: `Order Status Update #${context.params.orderId} - QwetuHub`,
         html: `
           <h2>Order Status Update</h2>
           <p>${statusMessages[newData.trackingStatus] || 'Your order status has been updated'}</p>

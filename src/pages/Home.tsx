@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Clock, Truck, CreditCard, Apple, ChefHat, Search, Plus, ShoppingCart, CheckCircle } from 'lucide-react';
+import { ShoppingBag, Clock, Truck, CreditCard, Apple, ChefHat, Search, Plus, ShoppingCart, CheckCircle, Heart } from 'lucide-react';
 import { categories } from '../data/products';
 import Cookie from '../components/Cookie';
 import Coffee from '../components/Coffee';
@@ -183,7 +183,7 @@ const Home: React.FC = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Why Choose Qhub?
+            Why Choose QwetuHub?
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -241,7 +241,7 @@ const Home: React.FC = () => {
             Browse By Category
           </h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-9 gap-4">
             {categories.map((category) => (
               <Link
                 key={category.id}
@@ -250,13 +250,14 @@ const Home: React.FC = () => {
               >
                 <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
                   <span className="text-orange-600">
-                    {category.icon === 'shopping-basket' && <ShoppingBag size={24} />}
+                    {category.icon === 'shopping-basket' && <ShoppingBasket size={24} />}
                     {category.icon === 'apple' && <Apple size={24} />}
                     {category.icon === 'cookie' && <Cookie size={24} />}
                     {category.icon === 'coffee' && <Coffee size={24} />}
                     {category.icon === 'spray-can' && <SprayCan size={24} />}
                     {category.icon === 'pencil' && <Pencil size={24} />}
                     {category.icon === 'chef-hat' && <ChefHat size={24} />}
+                    {category.icon === 'heart' && <Heart size={24} />}
                   </span>
                 </div>
                 <h3 className="font-medium text-gray-900 text-sm">{category.name}</h3>

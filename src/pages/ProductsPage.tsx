@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, Grid, List } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
 import { Product } from '../types';
@@ -14,6 +14,7 @@ const ProductsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [viewMode, setViewMode] = useState<'grid' | 'compact'>('grid');
 
   useEffect(() => {
     if (selectedCategory) {
@@ -68,18 +69,50 @@ const ProductsPage: React.FC = () => {
         onSelectCategory={handleCategorySelect}
       />
       
-      {/* Results */}
-      <div className="mb-4">
+      {/* View Mode Toggle and Results */}
+      <div className="flex justify-between items-center mb-4">
         <p className="text-gray-600">
           Showing {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
         </p>
+        
+        {/* View Mode Toggle - Mobile Only */}
+        <div className="flex md:hidden bg-gray-100 rounded-lg p-1">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-2 rounded-md transition-colors ${
+              viewMode === 'grid' 
+                ? 'bg-white text-blue-600 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            <Grid size={18} />
+          </button>
+          <button
+            onClick={() => setViewMode('compact')}
+            className={`p-2 rounded-md transition-colors ${
+              viewMode === 'compact' 
+                ? 'bg-white text-blue-600 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            <List size={18} />
+          </button>
+        </div>
       </div>
       
       {/* Products Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className={`grid gap-4 ${
+          viewMode === 'compact' 
+            ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6' 
+            : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+        }`}>
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              compact={viewMode === 'compact'}
+            />
           ))}
         </div>
       ) : (

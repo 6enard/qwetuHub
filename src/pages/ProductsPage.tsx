@@ -77,6 +77,7 @@ const ProductsPage: React.FC = () => {
         
         {/* View Mode Toggle - Mobile Only */}
         <div className="flex md:hidden bg-gray-100 rounded-lg p-1">
+          grid
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-md transition-colors ${

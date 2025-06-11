@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Clock, Truck, CreditCard, Apple, ChefHat, Search, Plus, ShoppingCart, CheckCircle, Heart } from 'lucide-react';
+import { ShoppingBag, Clock, Truck, CreditCard, Apple, ChefHat, Search, Plus, ShoppingCart, CheckCircle, Heart, ShoppingBasket } from 'lucide-react';
 import { categories } from '../data/products';
 import Cookie from '../components/Cookie';
 import Coffee from '../components/Coffee';

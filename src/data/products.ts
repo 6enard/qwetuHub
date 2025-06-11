@@ -51,6 +51,7 @@ export const products: Product[] = [
     category: 'groceries',
     description: 'Fresh, ripe tomatoes perfect for cooking or salads.',
     stock: 100,
+    featured: true
   },
   {
     id: 'onions',
@@ -69,6 +70,7 @@ export const products: Product[] = [
     category: 'groceries',
     description: 'Colorful bell peppers, perfect for stir-fries and salads.',
     stock: 50,
+    featured: true
   },
   {
     id: 'dania',

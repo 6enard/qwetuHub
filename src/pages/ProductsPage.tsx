@@ -77,7 +77,6 @@ const ProductsPage: React.FC = () => {
         
         {/* View Mode Toggle - Mobile Only */}
         <div className="flex md:hidden bg-gray-100 rounded-lg p-1">
-          
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-md transition-colors ${
@@ -101,12 +100,12 @@ const ProductsPage: React.FC = () => {
         </div>
       </div>
       
-      {/* Products Grid */}
+      {/* Products Grid - Optimized for Mobile */}
       {filteredProducts.length > 0 ? (
         <div className={`grid gap-4 ${
           viewMode === 'compact' 
             ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6' 
-            : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+            : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4'
         }`}>
           {filteredProducts.map((product) => (
             <ProductCard 

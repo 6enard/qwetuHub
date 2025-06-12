@@ -163,10 +163,10 @@ const AdminDashboard: React.FC = () => {
   // Calculate statistics
   const stats = {
     totalOrders: orders.length,
-    totalRevenue: orders.reduce((sum, order) => sum + order.totalAmount, 0),
+    totalRevenue: orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0),
     pendingOrders: orders.filter(order => order.trackingStatus === 'awaiting_payment').length,
     completedOrders: orders.filter(order => order.trackingStatus === 'delivered').length,
-    averageOrderValue: orders.length > 0 ? orders.reduce((sum, order) => sum + order.totalAmount, 0) / orders.length : 0
+    averageOrderValue: orders.length > 0 ? orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0) / orders.length : 0
   };
 
   const getStatusBadgeColor = (status: string) => {
@@ -208,7 +208,7 @@ const AdminDashboard: React.FC = () => {
         order.customerInfo.phone,
         order.customerInfo.roomNumber,
         order.items.length,
-        order.totalAmount,
+        order.totalAmount || 0,
         order.trackingStatus,
         new Date(order.createdAt).toLocaleDateString()
       ].join(','))
@@ -478,7 +478,7 @@ const AdminDashboard: React.FC = () => {
                       
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          KES {order.totalAmount.toLocaleString()}
+                          KES {(order.totalAmount || 0).toLocaleString()}
                         </div>
                         <div className="text-sm text-gray-500">
                           {order.items.map(item => item.name).join(', ').slice(0, 30)}

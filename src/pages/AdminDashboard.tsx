@@ -136,9 +136,9 @@ const AdminDashboard: React.FC = () => {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(order => 
         order.id.toLowerCase().includes(query) ||
-        order.customerInfo.name.toLowerCase().includes(query) ||
-        order.customerInfo.phone.includes(query) ||
-        order.customerInfo.roomNumber.toLowerCase().includes(query)
+        (order.customerInfo?.name || '').toLowerCase().includes(query) ||
+        (order.customerInfo?.phone || '').includes(query) ||
+        (order.customerInfo?.roomNumber || '').toLowerCase().includes(query)
       );
     }
 
@@ -204,9 +204,9 @@ const AdminDashboard: React.FC = () => {
       ['Order ID', 'Customer', 'Phone', 'Room', 'Items', 'Total', 'Status', 'Date'].join(','),
       ...orders.map(order => [
         order.id,
-        order.customerInfo.name,
-        order.customerInfo.phone,
-        order.customerInfo.roomNumber,
+        order.customerInfo?.name || '',
+        order.customerInfo?.phone || '',
+        order.customerInfo?.roomNumber || '',
         order.items.length,
         order.totalAmount || 0,
         order.trackingStatus,
@@ -465,13 +465,13 @@ const AdminDashboard: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {order.customerInfo.name}
+                            {order.customerInfo?.name || 'N/A'}
                           </div>
                           <div className="text-sm text-gray-500">
-                            Room {order.customerInfo.roomNumber}
+                            Room {order.customerInfo?.roomNumber || 'N/A'}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {order.customerInfo.phone}
+                            {order.customerInfo?.phone || 'N/A'}
                           </div>
                         </div>
                       </td>

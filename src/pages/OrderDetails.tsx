@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
-import { Package, Truck, CheckCircle, AlertCircle, MessageCircle, Phone, Clock, User, Home, Mail, ArrowLeft } from 'lucide-react';
+import { Package, Truck, CheckCircle, AlertCircle, MessageCircle, Phone, Clock, User, Home, Mail, ArrowLeft, Trash2 } from 'lucide-react';
 
 interface OrderData {
   items: Array<{
@@ -35,6 +35,8 @@ const OrderDetails: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
 
@@ -87,6 +89,22 @@ const OrderDetails: React.FC = () => {
     } catch (error) {
       console.error('Error updating order status:', error);
       setError('Failed to update order status');
+    }
+  };
+
+  const handleDeleteOrder = async () => {
+    if (!orderId) return;
+
+    setDeleting(true);
+    try {
+      await deleteDoc(doc(db, 'orders', orderId));
+      navigate('/admin'); // Redirect to admin dashboard after deletion
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      setError('Failed to delete order. Please try again.');
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmation(false);
     }
   };
 
@@ -194,9 +212,20 @@ Status: ${orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}`;
                     Placed on {new Date(orderData.createdAt).toLocaleString()}
                   </p>
                 </div>
-                <span className={`badge ${getStatusBadgeColor(orderData.trackingStatus)}`}>
-                  {orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`badge ${getStatusBadgeColor(orderData.trackingStatus)}`}>
+                    {orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}
+                  </span>
+                  {isAdmin && (
+                    <button
+                      onClick={() => setDeleteConfirmation(true)}
+                      className="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                      title="Delete Order"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Customer Information */}
@@ -297,52 +326,109 @@ Status: ${orderData.trackingStatus.replace(/_/g, ' ').toUpperCase()}`;
             <div className="p-6">
               <h2 className="text-lg font-bold mb-6">Order Actions</h2>
               
-              <div className="space-y-4">
-                <button
-                  onClick={() => updateOrderStatus('preparing')}
-                  className="btn w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
-                >
-                  <Package size={18} />
-                  Confirm Payment & Start Preparing
-                </button>
-                
-                <button
-                  onClick={() => updateOrderStatus('out_for_delivery')}
-                  className="btn w-full flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white"
-                >
-                  <Truck size={18} />
-                  Mark as Out for Delivery
-                </button>
-                
-                <button
-                  onClick={() => updateOrderStatus('delivered')}
-                  className="btn w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white"
-                >
-                  <CheckCircle size={18} />
-                  Mark as Delivered
-                </button>
+              {isAdmin && (
+                <div className="space-y-4">
+                  <button
+                    onClick={() => updateOrderStatus('preparing')}
+                    className="btn w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
+                  >
+                    <Package size={18} />
+                    Confirm Payment & Start Preparing
+                  </button>
+                  
+                  <button
+                    onClick={() => updateOrderStatus('out_for_delivery')}
+                    className="btn w-full flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white"
+                  >
+                    <Truck size={18} />
+                    Mark as Out for Delivery
+                  </button>
+                  
+                  <button
+                    onClick={() => updateOrderStatus('delivered')}
+                    className="btn w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    <CheckCircle size={18} />
+                    Mark as Delivered
+                  </button>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => makePhoneCall(orderData.customerInfo.phone)}
-                    className="btn flex-1 bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  >
-                    <Phone size={18} className="mr-2" />
-                    Call
-                  </button>
-                  <button
-                    onClick={openWhatsApp}
-                    className="btn flex-1 bg-green-100 text-green-700 hover:bg-green-200"
-                  >
-                    <MessageCircle size={18} className="mr-2" />
-                    WhatsApp
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => makePhoneCall(orderData.customerInfo.phone)}
+                      className="btn flex-1 bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    >
+                      <Phone size={18} className="mr-2" />
+                      Call
+                    </button>
+                    <button
+                      onClick={openWhatsApp}
+                      className="btn flex-1 bg-green-100 text-green-700 hover:bg-green-200"
+                    >
+                      <MessageCircle size={18} className="mr-2" />
+                      WhatsApp
+                    </button>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-200">
+                    <button
+                      onClick={() => setDeleteConfirmation(true)}
+                      className="btn w-full bg-red-100 text-red-700 hover:bg-red-200 flex items-center justify-center gap-2"
+                    >
+                      <Trash2 size={18} />
+                      Delete Order
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-red-100 p-2 rounded-full">
+                <AlertCircle className="text-red-600" size={20} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Delete Order</h3>
+            </div>
+            
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this order? This action cannot be undone and will permanently remove all order data.
+            </p>
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setDeleteConfirmation(false)}
+                className="btn btn-secondary"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteOrder}
+                className="btn bg-red-600 hover:bg-red-700 text-white flex items-center gap-2"
+                disabled={deleting}
+              >
+                {deleting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={16} />
+                    Delete Order
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

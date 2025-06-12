@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, onSnapshot, orderBy, where, Timestamp } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, where, Timestamp, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,8 @@ import {
   CheckCircle,
   XCircle,
   Truck,
-  RefreshCw
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 import NotificationBanner from '../components/NotificationBanner';
@@ -62,6 +63,8 @@ const AdminDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   
@@ -141,6 +144,21 @@ const AdminDashboard: React.FC = () => {
 
     setOrders(filtered);
   }, [allOrders, timeFilter, statusFilter, searchQuery]);
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!orderId) return;
+
+    setDeleting(orderId);
+    try {
+      await deleteDoc(doc(db, 'orders', orderId));
+      setDeleteConfirmation(null);
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      alert('Failed to delete order. Please try again.');
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   // Calculate statistics
   const stats = {
@@ -431,8 +449,7 @@ const AdminDashboard: React.FC = () => {
                   {orders.map((order) => (
                     <tr 
                       key={order.id} 
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/admin/orders/${order.id}`)}
+                      className="hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
@@ -482,16 +499,23 @@ const AdminDashboard: React.FC = () => {
                       </td>
                       
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/admin/orders/${order.id}`);
-                          }}
-                          className="text-blue-600 hover:text-blue-900 flex items-center gap-1 ml-auto"
-                        >
-                          <Eye size={16} />
-                          View
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => navigate(`/admin/orders/${order.id}`)}
+                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
+                          >
+                            <Eye size={16} />
+                            View
+                          </button>
+                          <button
+                            onClick={() => setDeleteConfirmation(order.id)}
+                            className="text-red-600 hover:text-red-900 flex items-center gap-1"
+                            disabled={deleting === order.id}
+                          >
+                            <Trash2 size={16} />
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -500,6 +524,51 @@ const AdminDashboard: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmation && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 mx-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-red-100 p-2 rounded-full">
+                  <AlertTriangle className="text-red-600" size={20} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Order</h3>
+              </div>
+              
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete order #{deleteConfirmation.slice(-8)}? This action cannot be undone.
+              </p>
+              
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setDeleteConfirmation(null)}
+                  className="btn btn-secondary"
+                  disabled={deleting === deleteConfirmation}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDeleteOrder(deleteConfirmation)}
+                  className="btn bg-red-600 hover:bg-red-700 text-white flex items-center gap-2"
+                  disabled={deleting === deleteConfirmation}
+                >
+                  {deleting === deleteConfirmation ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 size={16} />
+                      Delete Order
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

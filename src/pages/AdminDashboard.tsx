@@ -160,6 +160,15 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleOrderClick = (orderId: string) => {
+    navigate(`/admin/orders/${orderId}`);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent, orderId: string) => {
+    e.stopPropagation(); // Prevent row click when clicking delete
+    setDeleteConfirmation(orderId);
+  };
+
   // Calculate statistics
   const stats = {
     totalOrders: orders.length,
@@ -455,7 +464,8 @@ const AdminDashboard: React.FC = () => {
                   {orders.map((order) => (
                     <tr 
                       key={order.id} 
-                      className="hover:bg-gray-50 transition-colors"
+                      onClick={() => handleOrderClick(order.id)}
+                      className="hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
@@ -507,7 +517,10 @@ const AdminDashboard: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            onClick={() => navigate(`/admin/orders/${order.id}`)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/admin/orders/${order.id}`);
+                            }}
                             className="text-blue-600 hover:text-blue-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
                             title="View Order"
                           >
@@ -515,7 +528,7 @@ const AdminDashboard: React.FC = () => {
                             <span className="hidden sm:inline">View</span>
                           </button>
                           <button
-                            onClick={() => setDeleteConfirmation(order.id)}
+                            onClick={(e) => handleDeleteClick(e, order.id)}
                             className="text-red-600 hover:text-red-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-50 transition-colors"
                             disabled={deleting === order.id}
                             title="Delete Order"

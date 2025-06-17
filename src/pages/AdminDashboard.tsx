@@ -338,9 +338,9 @@ const AdminDashboard: React.FC = () => {
 
         {/* Filters and Search */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
-          <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex flex-col gap-6">
             {/* Search */}
-            <div className="flex-1">
+            <div className="w-full">
               <div className="relative">
                 <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
@@ -354,49 +354,55 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Time Filters */}
-            <div className="flex flex-wrap gap-2">
-              {[
-                { key: 'hour', label: 'Last Hour', icon: Clock },
-                { key: 'day', label: 'Today', icon: Calendar },
-                { key: 'week', label: 'This Week', icon: Calendar },
-                { key: 'month', label: 'This Month', icon: Calendar },
-                { key: 'all', label: 'All Time', icon: Calendar }
-              ].map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  onClick={() => setTimeFilter(key as TimeFilter)}
-                  className={`btn flex items-center gap-2 ${
-                    timeFilter === key ? 'btn-primary' : 'btn-secondary'
-                  }`}
-                >
-                  <Icon size={16} />
-                  {label}
-                </button>
-              ))}
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 mb-3">Time Period</h3>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: 'hour', label: 'Last Hour', icon: Clock },
+                  { key: 'day', label: 'Today', icon: Calendar },
+                  { key: 'week', label: 'This Week', icon: Calendar },
+                  { key: 'month', label: 'This Month', icon: Calendar },
+                  { key: 'all', label: 'All Time', icon: Calendar }
+                ].map(({ key, label, icon: Icon }) => (
+                  <button
+                    key={key}
+                    onClick={() => setTimeFilter(key as TimeFilter)}
+                    className={`btn flex items-center gap-2 text-sm ${
+                      timeFilter === key ? 'btn-primary' : 'btn-secondary'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Status Filters */}
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
-            {[
-              { key: 'all', label: 'All Orders', color: 'btn-secondary' },
-              { key: 'awaiting_payment', label: 'Awaiting Payment', color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' },
-              { key: 'preparing', label: 'Preparing', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
-              { key: 'out_for_delivery', label: 'Out for Delivery', color: 'bg-purple-100 text-purple-800 hover:bg-purple-200' },
-              { key: 'delivered', label: 'Delivered', color: 'bg-green-100 text-green-800 hover:bg-green-200' }
-            ].map(({ key, label, color }) => (
-              <button
-                key={key}
-                onClick={() => setStatusFilter(key as StatusFilter)}
-                className={`btn ${
-                  statusFilter === key 
-                    ? key === 'all' ? 'btn-primary' : color.replace('hover:', 'bg-opacity-100 ')
-                    : color
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+            {/* Status Filters */}
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 mb-3">Order Status</h3>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: 'all', label: 'All Orders', color: 'btn-secondary' },
+                  { key: 'awaiting_payment', label: 'Awaiting Payment', color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' },
+                  { key: 'preparing', label: 'Preparing', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
+                  { key: 'out_for_delivery', label: 'Out for Delivery', color: 'bg-purple-100 text-purple-800 hover:bg-purple-200' },
+                  { key: 'delivered', label: 'Delivered', color: 'bg-green-100 text-green-800 hover:bg-green-200' }
+                ].map(({ key, label, color }) => (
+                  <button
+                    key={key}
+                    onClick={() => setStatusFilter(key as StatusFilter)}
+                    className={`btn text-sm ${
+                      statusFilter === key 
+                        ? key === 'all' ? 'btn-primary' : color.replace('hover:', 'bg-opacity-100 ')
+                        : color
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -440,7 +446,7 @@ const AdminDashboard: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
                       Actions
                     </th>
                   </tr>
@@ -502,18 +508,20 @@ const AdminDashboard: React.FC = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => navigate(`/admin/orders/${order.id}`)}
-                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
+                            className="text-blue-600 hover:text-blue-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                            title="View Order"
                           >
-                            <Eye size={16} />
-                            View
+                            <Eye size={14} />
+                            <span className="hidden sm:inline">View</span>
                           </button>
                           <button
                             onClick={() => setDeleteConfirmation(order.id)}
-                            className="text-red-600 hover:text-red-900 flex items-center gap-1"
+                            className="text-red-600 hover:text-red-900 flex items-center gap-1 px-2 py-1 rounded hover:bg-red-50 transition-colors"
                             disabled={deleting === order.id}
+                            title="Delete Order"
                           >
-                            <Trash2 size={16} />
-                            Delete
+                            <Trash2 size={14} />
+                            <span className="hidden sm:inline">Delete</span>
                           </button>
                         </div>
                       </td>
